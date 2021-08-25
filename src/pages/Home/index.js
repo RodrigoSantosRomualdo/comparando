@@ -34,6 +34,7 @@ export default function Home({navigation}) {
 
           <View style={{width: '100%', height: '10%'}}>
             {/* AQUI VEM ANUNCIO FUTURAMENTE    */}
+            
           </View>
           
           <View style={{ width: '84%', alignContent: 'center', marginLeft: '7%', marginRight: '7%'}}>
