@@ -12,6 +12,9 @@ import Combustivel from './pages/Combustivel'
 import MinhasLista from './pages/MinhasLista'
 import Pesquisa from './pages/Pesquisa';
 import ProdutoEscolhido from './pages/ProdutoEscolhido'
+import MinhaListaProduto from './pages/MinhaListaProduto';
+import Scanner from './pages/Scanner';
+import PesquisaQrcode from './pages/PesquisaQrCode';
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -42,19 +45,22 @@ const HomeTabs = () => {
             <Tab.Screen name="MinhasLista" component={MinhasLista} 
             options={{
                 tabBarLabel: "Lista",
+                 
                 tabBarIcon: () => (
                     <Icon name="clipboard-list-outline" color={'#000'} size={26} />
                     )
                 }} 
             />
+            
 
            
         </Tab.Navigator>
     )
 }
 
+
 const Routes = () => {
-    
+
 
     return (
         <NavigationContainer>
@@ -97,7 +103,29 @@ const Routes = () => {
             options={{headerShown: false}}
              />
 
+        <Stack.Screen
+            name="MinhaListaProduto"
+            component={MinhaListaProduto}
+            options={{headerShown: false}}
+            />
+
+        <Stack.Screen
+            name="Scanner"
+            component={Scanner}
+            options={{headerShown: false}}
+            />
+
+        <Stack.Screen
+            name="PesquisaQrcode"
+            component={PesquisaQrcode}
+            options={{headerShown: false}}
+            />
+
+
+
+
         </Stack.Navigator>
+        
 
       </NavigationContainer>
 

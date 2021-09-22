@@ -4,13 +4,18 @@ import { SvgUri } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useKeyboard } from '@react-native-community/hooks'
 import styles from './styles';
+import * as Location from 'expo-location';
+import servicesLocationSup from  '../../services/servicesLocationSup'
 
 import MapLocalizacao from '../../components/MapLocalizacao';
 import ConfigButton from '../../components/ConfigButton';
 
 export default function Home({navigation}) {
     const [valueText, setValueText] = useState();
-
+    const [location, setLocation] = useState(null);
+    const [supermecadoId, setSupermecadoId] = useState()
+    const [supermecadoDistancia, setSupermecadoDistancia] = useState()
+  
     const keyboardd = useKeyboard()
     console.log('keyboard isKeyboardShow: ', keyboardd.keyboardShown)
     console.log('keyboard keyboardHeight: ', keyboardd.keyboardHeight)
@@ -21,12 +26,70 @@ export default function Home({navigation}) {
       if(!keyboardd.keyboardShown) {
         console.log('O QUE ESTA NO VALUE: ', valueText)
         if(valueText) {
-          console.log('VALUETEXT NÂO ESTA VAZIO IR PARA PESQUISA: ', valueText)
-          navigation.navigate('Pesquisa', {namePesquisa: valueText, filtro: '5KG'})
+          console.log('CHAMA FUNCAO PESQUISAR PRODUTO')
+          PesquisaProduto()
           setValueText('');
         }
       }
     });
+
+    const PesquisaProduto  = async () => {
+
+      if (!supermecadoId) {
+      console.log('VAI PARA PESQUISAR PRODUTO');
+      console.log('VALUETEXT NÂO ESTA VAZIO IR PARA PESQUISA: ', valueText);
+      
+
+      let location = await Location.getCurrentPositionAsync({});
+      //setLocation(location);
+      //console.log('Latitude: ',location.coords.latitude)
+      //console.log('Longitude: ',location.coords.longitude)
+
+      const json = await JSON.stringify({ answer: 42 });
+      const response = await servicesLocationSup.post('/', { coordinates: [location.coords.latitude, location.coords.longitude]});
+      let date = response.data;
+      //console.log(response.data[0]._id)
+      //setSupermecadoId(response.data)
+      let arraySupermecado = [];
+      let arraySupermecadoDiscancia = [];
+      date.map(async function(item) {
+        //console.log(item._id)
+       //console.log('... ----------------------->',item.location_distance)
+       
+       await arraySupermecado.push(item._id)
+       await arraySupermecadoDiscancia.push(item)
+       //await arraySupermecadoDiscancia.push({id: item._id, distancia: item.location_distance})
+       
+      })
+      await setSupermecadoId(arraySupermecado)
+      await setSupermecadoDistancia(arraySupermecadoDiscancia)
+      //console.log('AQUI ---------------------------> ', arraySupermecadoDiscancia.id)
+      //console.log('supermecadoId: ', arraySupermecado)
+      //console.log('supermecadoId: ', supermecadoId)
+      //console.log('supermecadoId - BUSCOU DO BANCO ', arraySupermecado)
+      navigation.navigate('Pesquisa', 
+      {namePesquisa: valueText, 
+      filtro: '5KG',
+      arraySupermecado,
+      arraySupermecadoDiscancia
+      });
+
+    } else {
+      //console.log('JA EXISTE ID DO SUPERMECADO: ', supermecadoId)
+      console.log('JA EXISTE ID DO SUPERMECADO: ')
+      navigation.navigate('Pesquisa', 
+      {namePesquisa: valueText, 
+      filtro: '5KG',
+      supermecadoId,
+      supermecadoDistancia
+      });
+
+    }
+
+      
+    }
+
+    
 
     return (
       
@@ -67,7 +130,7 @@ export default function Home({navigation}) {
 
           </View>
               {/* CODIGO DE BARRAS  */}
-          <TouchableOpacity style={{flexDirection: "row", justifyContent: "center", marginBottom: '15%' }}>
+          <TouchableOpacity style={{flexDirection: "row", justifyContent: "center", marginBottom: '15%' }} onPress={()=> navigation.navigate('Scanner')}>
 
                 <View style={{marginRight: '5%'}}>
                   <Text style={{fontSize: 15, color: '#AEAEAE'}}>Código de barras</Text></View>
