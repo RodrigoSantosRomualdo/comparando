@@ -15,6 +15,8 @@ import ProdutoEscolhido from './pages/ProdutoEscolhido'
 import MinhaListaProduto from './pages/MinhaListaProduto';
 import Scanner from './pages/Scanner';
 import PesquisaQrcode from './pages/PesquisaQrCode';
+import LogarCriarConta from './pages/LogarCriarConta'
+import CriarConta from './pages/CriarConta'
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -121,12 +123,21 @@ const Routes = () => {
             options={{headerShown: false}}
             />
 
+        <Stack.Screen
+            name="LogarCriarConta"
+            component={LogarCriarConta}
+            options={{headerShown: false}}
+            />
 
+        <Stack.Screen
+            name="CriarConta"
+            component={CriarConta}
+            options={{headerShown: false}}
+            />
 
 
         </Stack.Navigator>
         
-
       </NavigationContainer>
 
 
