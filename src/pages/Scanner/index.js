@@ -92,9 +92,6 @@ export default function Scanner() {
         </View>)
     }
 
-    const fazer = () => {
-      console.log('FAZER')
-    }
 
     const lerQrcodeNovamente =  () => {
       console.log('VOLTAR')
@@ -153,7 +150,7 @@ export default function Scanner() {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
+          //Alert.alert("Modal has been closed.");
           setModalVisible(!modalVisible);
         }}
       >
@@ -189,7 +186,7 @@ export default function Scanner() {
         transparent={true}
         visible={modalVisibleCodNot}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
+          //Alert.alert("Modal has been closed.");
           setModalVisible(!modalVisibleCodNot);
         }}
       >

@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, ImageBackground,Linking, Button, StyleSheet, TouchableOpacity, Image, FlatList,Modal, Pressable, Picker, DrawerLayoutAndroidBase, RecyclerViewBackedScrollViewBase} from 'react-native';
+import {View, Alert, Text, ImageBackground,Linking, Button, StyleSheet, TouchableOpacity, Image, FlatList,Modal, Pressable, Picker, DrawerLayoutAndroidBase, RecyclerViewBackedScrollViewBase} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import sistemaUsuario from '../../services/sistemaUsuario';
+import Storage from '../../services/Storage';
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import servicesSupIdDescProdUnidade from '../../services/servicesSupIdDescProdUnidade'
@@ -15,10 +17,13 @@ import styles from './styles';
 export default function CriarConta(props) {
     //console.log('props.route: ', props.route.params.codigo_barras)
     const navigation = useNavigation();
-    const [valueEmail ,setValueEmail] = useState()
-    const [valuePassword ,setValuePassword] = useState()
-
+    const [valueEmail ,setValueEmail] = useState('')
+    const [valuePassword ,setValuePassword] = useState('')
+    const [valuePasswordConfirmacao ,setValuePasswordConfirmacao] = useState('')
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const [userId, setUserId] = useState()
+    const [erroLogin, setErroLogin] = useState(false)
+
     const [dataServiceprod, setDataServiceprod ] = useState()
     const [modalVisibleSemLista, setModalVisibleSemLista] = useState(false);
     const [modalVisibleAddProduto, setModalVisibleAddProduto] = useState(false);
@@ -40,8 +45,59 @@ export default function CriarConta(props) {
 
     }, []);
 
-    
+    // valuePasswordConfirmacao ,setValuePasswordConfirmacao
+    async function criandoConta() {
 
+      if (valueEmail === "") {
+        return Alert.alert('Error', `Campos E-mail vazio.`,
+          [{ text: 'Tentar Criar Novamente', },], )
+      }
+      else if (valuePassword === "" || valuePasswordConfirmacao === "") {
+        return Alert.alert('Error', `Algum campo da senha está vazio.`,
+          [{ text: 'Tentar Criar Novamente', },], )
+      }
+      else if (valuePassword !== valuePasswordConfirmacao) {
+        return Alert.alert('Error', `O campo senha e confirmação de senha estão diferentes.`,
+          [{ text: 'Tentar Criar Novamente', },], )
+      } else if (valueEmail != "" && valuePassword === valuePasswordConfirmacao) {
+        console.log('PASSOU AQUI GUERREIRO')
+        const data = await sistemaUsuario.post('/signup', {
+          email: valueEmail,
+          password: valuePassword
+        })
+        if (data.data.status === 'FAILED') {
+          console.log('data: ', data.data)
+          return Alert.alert('Error', `${data.data.message}`,
+          [{ text: 'Tentar Criar Novamente', },], )
+
+        }  else if (data.data.status === 'SUCCESS') {
+          //(data.data.status === 'FAILED')
+          console.log('data.data.status ',data.data.data.email)
+          let email = data.data.data.email;
+          console.log('email: ', email)
+          await Storage.armazenarUserLogin('value', email)
+          await Storage.buscarUserLogin('value')
+          
+          //navigation.navigate('MinhasLista', {});
+          navigation.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'MinhasLista',
+                params: { email: email },
+              },
+            ],
+          })
+        }
+        
+
+      }
+
+
+
+
+
+      }
 
     return (
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -66,6 +122,7 @@ export default function CriarConta(props) {
                   style={{height: 50, margin: 12, padding: 10, width: '85%',borderTopLeftRadius: 8,borderBottomLeftRadius: 8,padding: 7,
                     backgroundColor: '#D9D7DB', borderRadius: 20, fontSize: 17}}
                     placeholder="Inserir seu email"
+                    autoCapitalize = 'none'
                     multiline={false}
                     value={valueEmail}
                     onChangeText={valueEmail => setValueEmail(valueEmail)}
@@ -103,15 +160,15 @@ export default function CriarConta(props) {
                       placeholder="* * * * * * * *"
                       multiline={false}
                       secureTextEntry={true}
-                      value={valuePassword}
-                      onChangeText={valuePassword => setValuePassword(valuePassword)}
+                      value={valuePasswordConfirmacao}
+                      onChangeText={valuePasswordConfirmacao => setValuePasswordConfirmacao(valuePasswordConfirmacao)}
                   />
               </View>
             </View>
 
             <View style={{width: '90%', borderEndColor: 'black', borderBottomWidth: 1}}>
                 <TouchableOpacity style={{marginTop: '15%',padding: 15, backgroundColor: '#6D28D9', justifyContent: 'center', alignItems: 'center',
-                    borderRadius: 5, marginVertical: 5, height: 60, marginBottom: '5%'}} >
+                    borderRadius: 5, marginVertical: 5, height: 60, marginBottom: '5%'}} onPress={() => criandoConta()} >
                     <Text style={{fontSize: 16, padding: 25, color: '#ffffff'}}>Criar Conta</Text>
                 </TouchableOpacity>
 
@@ -119,7 +176,7 @@ export default function CriarConta(props) {
 
              <View style={{marginTop: '5%',flexDirection: 'row' ,justifyContent: 'center', alignItems: 'center', fontSize: 15}}>
                     <Text style={{justifyContent: 'center', alignItems: 'center', fontSize: 15}}>
-                        Ainda não tem uma conta?</Text>
+                        Já tem conta?</Text>
 
                         <Text style={{color: 'blue', justifyContent: 'center', alignItems: 'center'}}
                             onPress={() => navigation.navigate('LogarCriarConta')}>

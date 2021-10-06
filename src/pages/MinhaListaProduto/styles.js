@@ -6,7 +6,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#E5E5E5',
         //alignItems:'center',
         //justifyContent: 'center'
-    }
+    },
+    containerCenter: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+      },
 })
 
 export default styles;

@@ -5,6 +5,16 @@ const styles = StyleSheet.create({
         flex: 1,
         //marginTop: StatusBar.currentHeight || 0,
       },
+      containerCenter: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+      },
+      containerCarregando: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+      },
       item: {
         backgroundColor: '#f9c2ff',
         padding: 20,

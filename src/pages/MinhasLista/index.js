@@ -1,45 +1,53 @@
-import React, {useEffect, useState} from 'react';
-import { Button, StyleSheet, Text, View , Modal, TextInput, Pressable , TouchableOpacity, FlatList} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import ServiceListaUser from '../../services/listaUser'
-import serviceUser from '../../services/serviceUser'
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import styles from './styles'
-
-export default function MinhasLista({navigation}) {
-
-  
-  //const navigation = useNavigation();
-  const [lista, setLista] = useState(null)
-  const [modalVisibleSemLista, setModalVisibleSemLista] = useState(false);
-  const [valueTextSemLista, setValueTextSemLista] = useState()
-  const [userId, setUserId] = useState(null)
-  // Trazer pelo navigation quando o usuário logar
-  const [dataServiceprod, setDataServiceprod ] = useState()
-
-  const armazenarUserLogin = (chave, valor) => {
-    AsyncStorage.setItem(chave, valor)
+/*
+ const armazenarUserLogin = (chave, valor) => {
+    AsyncStorageUsuario.setItem(chave, valor)
   }
 
   const BuscarUserLogin = (chave, valor) => {
-    AsyncStorage.setItem(chave, valor)
+    AsyncStorageUsuario.setItem(chave, valor)
   }
   
 
   const buscarUserLogin = async (chave) => {
-    const valor = await AsyncStorage.getItem(chave)
+    const valor = await AsyncStorageUsuario.getItem(chave)
     setUserId(valor)
     console.log('DENTRO DO STORAGE: ', valor)
   }
 
   const deleteUserLogin = async (chave) => {
-    await AsyncStorage.removeItem(chave)
+    await AsyncStorageUsuario.removeItem(chave)
     //setUserId(valor)
     console.log('DELETE STORAGE: ')
   }
 
+
+
+*/
+
+
+
+import React, {useEffect, useState} from 'react';
+import { Button, Alert,StyleSheet, Text, View , Modal, TextInput, Pressable , TouchableOpacity, FlatList} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import ServiceListaUser from '../../services/listaUser'
+import serviceUser from '../../services/serviceUser'
+import AsyncStorageUsuario from '@react-native-async-storage/async-storage';
+import Storage from '../../services/Storage';
+import styles from './styles'
+import { Ionicons } from '@expo/vector-icons';
+
+export default function MinhasLista(props) {
+  console.log('EXECUTOU AQUI : props: ',props.route.params)
   
+  const navigation = useNavigation();
+  const [lista, setLista] = useState(null)
+  const [listaVazia, setListaVazia] = useState('')
+  const [modalVisibleSemLista, setModalVisibleSemLista] = useState(false);
+  const [valueTextSemLista, setValueTextSemLista] = useState()
+  const [userId, setUserId] = useState(Storage.buscarUserLogin('value'))
+  // Trazer pelo navigation quando o usuário logar
+  const [dataServiceprod, setDataServiceprod ] = useState()
+  const [loading, setLoading] = useState(true);
 
 
   //armazenarUserLogin('verificador', 'rsr@gmail.com')
@@ -48,36 +56,101 @@ export default function MinhasLista({navigation}) {
   // rsr@gmail.com
 
 
-  async function loadLista() {
-    await buscarUserLogin('verificador')
+  async function loadLista(id_user) {
+    //await buscarUserLogin('verificador')
+    // "id_user": "6136be273d77ff5c8179eb74"
     console.log('EXECUTOU A PESQUISA DA LISTA')
     const responseLista = await ServiceListaUser.post('/findlistaall', {
-      "id_user": userId
+      "id_user": id_user
     })
-  
+    console.log('responseLista::::::::::::::::: ', responseLista.data)
     //console.log('PRODUTOS: ',responseLista.data )
     return await setLista(responseLista.data)
   }
 
+  useEffect(() => {
+    (async () => {
+    /* const deleteUserLogin = async (chave) => {
+        await AsyncStorageUsuario.removeItem(chave)
+        console.log('DELETE STORAGE: ')
+      }
+      deleteUserLogin('value')  */  
+
+      const id_user = await Storage.buscarUserLogin('value')
+      setUserId(id_user)
+      if (id_user) {
+      console.log('id_userid_userid_userid_user', id_user)
+        const responseLista = await ServiceListaUser.post('/findlistaall', {
+          "id_user": id_user
+        })
+        console.log('O QUE ACONTECE NA LISTA: ', responseLista.data)
+        if (responseLista.data.status === 0) {
+          setLoading(false);
+          return await setListaVazia('0')
+          
+        } else {
+          setLoading(false);
+          return await setLista(responseLista.data)
+        }
+        
+
+        //console.log('response.data:::: ', response.data)
+      }
+    })();
+  }, [])
+
+
+  useEffect(() => {
+    (async () => {
+      console.log('CHAMOU ESSE USEEFFECT -----------__>>>>>>>>.')
+      const id_user = await Storage.buscarUserLogin('value')
+      setUserId(id_user)
+      if (id_user) {
+      console.log('id_userid_userid_userid_user', id_user)
+        const responseLista = await ServiceListaUser.post('/findlistaall', {
+          "id_user": id_user
+        })
+        console.log('O QUE ACONTECE NA LISTA: ', responseLista.data)
+        if (responseLista.data.status === 0) {
+          setLoading(false);
+          return await setListaVazia('0')
+          
+        } else {
+          setLoading(false);
+          return await setLista(responseLista.data)
+        }
+      
+      }
+    })();
+  }, [props.route.params])
+
+
+  
+  /*
 useEffect(() => {
   console.log('EXECUTOU O USEEFFECT')
-  
-  loadLista()
+  const id_user = await Storage.BuscarUserLogin('value')
+  loadLista(id_user)
 
-}, []);
+}, []);  */
 
 async function addLista() {
   //armazenarUserLogin('verificador', 'MEU-EMAIL-LOGIN@GMAIL.COM')
   //deleteUserLogin('verificador')
-  await buscarUserLogin('verificador')
+  //await buscarUserLogin('value')
+  console.log('-------------_>>>>')
+  //const resultStorage = await Storage.BuscarUserLogin('value')
+  const resultStorage = await Storage.buscarUserLogin('value')
+  console.log('resultStorage: ', resultStorage)
+  //await setUserId(resultStorage)
   console.log('userId: ', userId)
-  if (userId !== null) {
-    setModalVisibleSemLista(true)
+
+  if (userId === null) {
+    navigation.navigate('LogarCriarConta', userId); 
+    
   } else {
-    navigation.navigate('LogarCriarConta', {
-      userId: userId,
-    }); 
-  }
+    setModalVisibleSemLista(true)
+  }  
   
 }
 
@@ -99,33 +172,68 @@ async function findProdutoList(nameList) {
 }
 
 async function criarLista() {
+  console.log('lenght: VERIFICAR SE EXISTE ALGUM CARACTERE ')
   if (valueTextSemLista === '') {
+    
     console.log('USUARIO NÂO INSERIU NADA')
+    return Alert.alert(
+      //title
+      'Error',
+      //body
+      `Não é possível criar uma lista sem nome`,
+      [
+        {
+          text: 'Tentar Novamente',
+        },
+      ],
+  )
     
   } else {
     console.log('--------------------- ', valueTextSemLista)
-    
-
-
-
-    
+    console.log('userId: ----------------', userId)
     const responseLista = await ServiceListaUser.post('/createlista', {
       "id_user": userId,
       "nome_lista": valueTextSemLista,
-      "primeira_lista_true": true
+      "primeira_lista_true": true,
+      "lista_padrao_add_produto": true
     }) 
 
     console.log('responseLista ', responseLista.data)
     if (responseLista.data.status === 1) {
       console.log('LISTA CRIADA COM SUCESSO')
-      setLista(null)
+      const valor = await Storage.buscarListaPadrao('lista')
+      console.log('VALOR::::::::::::', valor)
+      if (valor === null) {
+        Storage.armazenarListaPadrao('lista', valueTextSemLista)
+      } else {
+        Storage.deletarListaPadrao('lista')
+        Storage.armazenarListaPadrao('lista', valueTextSemLista)
+      }
+      const valor2 = await Storage.buscarListaPadrao('lista')
+      console.log('VALOR 222222222:::::::: ', valor2)
+      //Storage.deletarListaPadrao('lista')
+      //Storage.armazenarListaPadrao('lista', valueTextSemLista)
+      console.log('responseLista.data: ',responseLista.data)
+      setListaVazia('')
+      console.log()
+      //setLista(null)
     }
-    loadLista()
+    await loadLista(userId)
     setModalVisibleSemLista(false)
     setValueTextSemLista('')  
     
   }
   
+}
+
+if (loading) {
+  return (
+    <View style={styles.containerCenter}>
+      <Text style={{ fontSize: 17, fontStyle: 'italic' }}>
+        carregando dados...
+        </Text>
+    </View>
+  )
 }
 
 if(modalVisibleSemLista) {
@@ -134,7 +242,7 @@ if(modalVisibleSemLista) {
     transparent={true}
     visible={modalVisibleSemLista}
     onRequestClose={() => {
-      Alert.alert("Modal has been closed.");
+      //Alert.alert("AA Modal has been closed.");
       setModalVisibleSemLista(!modalVisibleSemLista);
     }}
   >
@@ -146,6 +254,7 @@ if(modalVisibleSemLista) {
             style={{width: 200 ,height: 60, margin: 10, padding: 10, 
               backgroundColor: '#9C93FC', borderRadius: 20, fontSize: 20}}
               placeholder="Criar Lista"
+              autoCapitalize = 'none'
               multiline={false}
               value={valueTextSemLista}
               onChangeText={valueTextSemLista => setValueTextSemLista(valueTextSemLista)}
@@ -174,8 +283,49 @@ if(modalVisibleSemLista) {
 
 return (
   <View style={styles.container}>
-    <Text style={{color: '#040E2C',fontWeight: 'bold', fontSize: 20, marginTop: '7%', marginLeft: '7%'}}>Minhas Listas</Text>
     
+    <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: '7%', height: '10%'}}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+                        <Ionicons name="chevron-back-outline" size={24} color="black" />
+                    </TouchableOpacity>
+                    <Text style={{color: '#040E2C',fontWeight: 'bold', fontSize: 20,  marginLeft: '7%'}}>Minhas Listas</Text>
+                    <TouchableOpacity>
+                       <Text></Text>
+                    </TouchableOpacity>
+      </View>
+
+    
+ 
+    {userId && listaVazia === '0' &&
+      <View style={{marginTop: '20%',justifyContent: 'center', alignItems: 'center'}}>
+      <Text style={{ fontSize: 17, fontStyle: 'italic' }}>
+        Usuário sem lista.
+        </Text>
+        <Text style={{ fontSize: 17, fontStyle: 'italic', marginTop: '5%' }}>
+        Para criar, clique no botão "<Text style={{fontWeight: 'bold'}}>Criar lista +</Text>"
+        </Text>
+
+        <Text style={{ fontSize: 17, fontStyle: 'italic', marginTop: '10%', margin: '8%', justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{fontWeight: 'bold', }}>Atenção:</Text>
+         A última lista criada ficará por padrão para adicionar os produtos,
+         <Text> caso deseje alterar clique no menu.</Text>
+        </Text>
+        
+      
+    </View>
+    }
+
+    {!userId &&
+      <View style={{marginTop: '20%',justifyContent: 'center', alignItems: 'center'}}>
+      <Text style={{ fontSize: 17, fontStyle: 'italic' }}>
+        Usuário não logado.
+        </Text>
+        <Text style={{ fontSize: 17, fontStyle: 'italic', marginTop: '5%' }}>
+        Para Logar, clique no botão "<Text style={{fontWeight: 'bold'}}>Criar lista +</Text>"
+        </Text>
+    </View>
+    }
+
     <FlatList
         data={lista}
         keyExtractor={(item) => item._id}
@@ -200,6 +350,7 @@ return (
       )}
     />
 
+    
 
 <View style={{justifyContent: 'center', alignItems: 'center'}}>
             <TouchableOpacity style={{width: '70%', height: 83,  backgroundColor: '#040E2C', borderRadius: 28, 

@@ -1,69 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, Button, StyleSheet, TouchableOpacity, Image, FlatList,Modal, Pressable, Picker, DrawerLayoutAndroidBase, RecyclerViewBackedScrollViewBase} from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import servicesSupIdDescProdUnidade from '../../services/servicesSupIdDescProdUnidade'
-import serviceUser from '../../services/serviceUser'
-import ServiceListaUser from '../../services/listaUser'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+/*
 
-import styles from './styles';
-
-export default function Pesquisa(props) {
-    //console.log('props.route: ', props.route.params.codigo_barras)
-    const navigation = useNavigation();
-    const [userId, setUserId] = useState()
-    const [dataServiceprod, setDataServiceprod ] = useState()
-    const [modalVisibleSemLista, setModalVisibleSemLista] = useState(false);
-    const [modalVisibleAddProduto, setModalVisibleAddProduto] = useState(false);
-    const [valueTextSemLista, setValueTextSemLista] = useState()
-    const [valueQtd, setValueQtd] = useState("1")
-    const [selectedValue, setSelectedValue] = useState("java");
-    const [nameLista, setNameLista] = useState(false)
-    const [options, setOptions] = useState(["Home","Savings","Car","GirlFriend"])
-    const [objProdutoEscolhido, setObjProdutoEscolhido] = useState(null)
-    //var options =["Home","Savings","Car","GirlFriend"];
-
-
-    //console.log(props.route.params)
-
-    async function loadSupProduto(id, codQrcode) {
-        console.log('qrcode: ', codQrcode)
-        console.log('EXECUTOU A PESQUISA DO PREÇO NO SUPERMECADO')
-        let response;
-        if (codQrcode) {
-          response = await servicesSupIdDescProdUnidade.post('/buscar-codigo-barras',{
-            codigo_barras: codQrcode, 
-        })
-        if (response.data) {
-          console.log('INSERIU AQUI OS DADOS')
-         return await setDataServiceprod(response.data)
-        }
-        
-        } else {
-          response = await servicesSupIdDescProdUnidade.post('/buscar-id-un-desc',{
-            id: id, 
-            descricao: props.route.params.namePesquisa,
-            //filtro: props.route.params.filtro,
-          })
-          return await setDataServiceprod(response.data)
-        }
-        
-        //console.log('FINALIZOU', response.data)
-        // TRAZ O E-MAIL OU O TOKEN PARA TRAZER O ID DO USUARIO PARA SALVAR PRODUTOS NA LISTA
-        const responseUser = await serviceUser.post('/finduser', {"email": "rsr@gmail.com"})
-        
-        console.log('PRODUTOS: ',response.data )
-        
-        //console.log('FINALIZOU', response.data )
-        
-        //console.log('RESPONSE USER: ', responseUser.data[0]._id)
-        setUserId(responseUser.data[0]._id)
-    }
-
-    async function loadSupProdutoQrcode() {
+async function loadSupProdutoQrcode() {
       console.log('EXECUTOU A PESQUISA DO PREÇO NO SUPERMECADO PELO CODIGO DE BARRAS')
       const response = await servicesSupIdDescProdUnidade.post('/buscar-codigo-barras',{
           codigo_barras: props.route.params.codigo_barras, 
@@ -79,8 +16,83 @@ export default function Pesquisa(props) {
       //console.log('RESPONSE USER: ', responseUser.data[0]._id)
       await setUserId(responseUser.data[0]._id)
   }
+
+
+*/
+
+
+
+import React, {useEffect, useState} from 'react';
+import {View, Text, Alert, Button, StyleSheet, TouchableOpacity, Image, FlatList,Modal, Pressable, Picker, DrawerLayoutAndroidBase, RecyclerViewBackedScrollViewBase} from 'react-native';
+import { TextInput } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import servicesSupIdDescProdUnidade from '../../services/servicesSupIdDescProdUnidade'
+import serviceUser from '../../services/serviceUser'
+import ServiceListaUser from '../../services/listaUser'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Storage from '../../services/Storage';
+
+import styles from './styles';
+
+export default function Pesquisa(props) {
+    //console.log('props.route: ', props.route.params.codigo_barras)
+    const navigation = useNavigation();
+    const [userId, setUserId] = useState(Storage.buscarUserLogin('value'))
+    const [listaPadraoAdd, setListaPadraoAdd] = useState();
+    const [dataServiceprod, setDataServiceprod ] = useState()
+    const [modalVisibleSemLista, setModalVisibleSemLista] = useState(false);
+    const [modalVisibleAddProduto, setModalVisibleAddProduto] = useState(false);
+    const [valueTextSemLista, setValueTextSemLista] = useState()
+    const [valueQtd, setValueQtd] = useState("1")
+    const [selectedValue, setSelectedValue] = useState("java");
+    const [nameLista, setNameLista] = useState(false)
+    const [options, setOptions] = useState(["Home","Savings","Car","GirlFriend"])
+    const [objProdutoEscolhido, setObjProdutoEscolhido] = useState(null)
+    //var options =["Home","Savings","Car","GirlFriend"];
+
+
+    //console.log(props.route.params)
+
+    async function loadSupProduto(id, codQrcode) {
+      const listaPadraoAdd = await Storage.buscarListaPadrao('lista')
+      console.log('listaPadraoAddlistaPadraoAddlistaPadraoAddlistaPadraoAdd ', listaPadraoAdd)
+      await setListaPadraoAdd(listaPadraoAdd)
+        console.log('qrcode: ', codQrcode)
+        console.log('EXECUTOU A PESQUISA DO PREÇO NO SUPERMECADO')
+        let response;
+      
+        
+          response = await servicesSupIdDescProdUnidade.post('/buscar-id-un-desc',{
+            id: id, 
+            descricao: props.route.params.namePesquisa,
+            //filtro: props.route.params.filtro,
+          })
+          //console.log('setDataServiceprod: ', response.data)
+          //console.log(response.data.length)
+          if (response.data.length === 0) {
+            const result = {error: false, status: 'vazio', mensagem: 'Produto não encontrado'}
+            //console.log(result)
+            return await setDataServiceprod(result)
+          } else {
+            return await setDataServiceprod(response.data)
+          } 
+          
+        //console.log('dataServiceprod: ', dataServiceprod)
+        //console.log('FINALIZOU', response.data)
+        // TRAZ O E-MAIL OU O TOKEN PARA TRAZER O ID DO USUARIO PARA SALVAR PRODUTOS NA LISTA
+       // const responseUser = await serviceUser.post('/finduser', {"email": "rsr@gmail.com"})
+        //console.log('PRODUTOS: ',response.data )
+        //console.log('FINALIZOU', response.data )
+        //console.log('RESPONSE USER: ', responseUser.data[0]._id)
+        //setUserId(responseUser.data[0]._id)
+    }
+
+    
     //console.log('-->> ', dataServiceprod)
     useEffect(() => {
+      
         let id;
         if (props.route.params.arraySupermecado) {
             id = props.route.params.arraySupermecado;
@@ -122,53 +134,114 @@ export default function Pesquisa(props) {
       setValueQtd("1")
     }
     async function addProdutoLista() {
-      console.log('valueQtd ', valueQtd )
-      console.log('nameLista-----------------_> ', nameLista[0].nome_lista )
-      console.log('valueQtd ', valueQtd )
-      console.log('========================', objProdutoEscolhido.preco_venda)
+      //console.log('valueQtd ', valueQtd )
+      
+      console.log('listaPadraoAdd:::::::::::', listaPadraoAdd)
+      //console.log('nameLista-----------------_> ', listaPadraoAdd )
+      //console.log('valueQtd ', valueQtd )
+      //console.log('========================', objProdutoEscolhido.preco_venda)
+      let preco_total = await valueQtd * objProdutoEscolhido.preco_venda;
+      console.log('preco_Total::: ', preco_total)
       const responseCreateProdutoLista = await ServiceListaUser.post('/createprodutolista', {
         "id_user": userId,
         "id_produto": objProdutoEscolhido._id,
-        "nome_lista": nameLista[0].nome_lista,
+        "nome_lista": listaPadraoAdd,
         "primeira_lista_true": false,
         "descricao": objProdutoEscolhido.descricao,
         "codigo_barras": objProdutoEscolhido.codigo_barras,
         "preco_venda": objProdutoEscolhido.preco_venda,
         "quantidade": valueQtd,
+        "preco_total": preco_total,
         "unidade_medida": objProdutoEscolhido.unidade_medida,
         "categoria": objProdutoEscolhido.categoria,
-        "supermecado": objProdutoEscolhido.supermecado._id
+        "supermecado": objProdutoEscolhido.supermecado._id,
+        
       }) 
       
-      //console.log('responseCreateProdutoLista: ',responseCreateProdutoLista.data)
+      console.log('responseCreateProdutoLista: ',responseCreateProdutoLista.data)
+      if (responseCreateProdutoLista.data.resposta === "Lista de produto criado com sucesso") {
+        
+        console.log('CAIUCAIUCAIUCAIUCAIUCAIUCAIU')
+        Alert.alert(
+          'Atenção',
+          `Produto ${objProdutoEscolhido.descricao} adicionado com sucesso!`,
+          [
+          { text: 'OK', onPress: () => navigation.navigate('Home') },
+          ],
+        )
+      }
       
       setModalVisibleAddProduto(false)
       await setObjProdutoEscolhido(null)
-
-
-
-
       setValueQtd("1")
     }
     let teste = [];
-    async function salvarProduto(objProduto, objUser, descricao, item) {
-      console.log('O QUE VEIO NA DESCRICAO SELECIONADA: ' , descricao)
-      console.log('O QUE VEIO NA item item: ' , item)
-      // objProdutoEscolhido, setObjProdutoEscolhido
+    async function salvarProduto(objProduto, userId, descricao, item) {
+
+      if (userId === null) {
+        console.log('É NULL userId: ',userId)
+
+        Alert.alert(
+          'Atenção',
+          `Você precisa logar para adicionar produto na lista.`,
+          [{ text: 'Voltar', onPress: () => console.log('cancelou para não criar conta') , 
+              cancelable: true,
+          },
+          { text: 'Entrar', onPress: () => navigation.navigate('LogarCriarConta') },
+          ],
+        )
+
+
+      } else {
+        const resultUserId = await Storage.buscarUserLogin('value');
+        setUserId(resultUserId)
+        console.log('userId:::: ',  resultUserId)
         const responseLista = await ServiceListaUser.post('/findlistaall', {
-            "id_user": objUser,
+          "id_user": resultUserId
+        })
+        if (responseLista.data.status === 0) {
+          Alert.alert(
+            'Atenção',
+            `${responseLista.data.message} Você precisa criar uma lista.`,
+            [{ text: 'Voltar', onPress: () => console.log('cancelou a criação da lista') , 
+                cancelable: true,
+            },
+            { text: 'Criar', onPress: () => navigation.navigate('MinhasLista') },
+            ],
+          )
+        } else if (responseLista.data.status !== 0) {
+          console.log('responseLista::: ', responseLista.data)
+          console.log('objProdutoEscolhido--> ', item)
+          await setObjProdutoEscolhido(item)
+          setModalVisibleAddProduto(true)
+          //setModalVisible(true);
+
+        }
+        
+
+      }
+      
+
+      //console.log('O QUE VEIO NA DESCRICAO SELECIONADA: ' , descricao)
+      //console.log('O QUE VEIO NA item item: ' , item)
+      // objProdutoEscolhido, setObjProdutoEscolhido
+     
+     /* const responseLista = await ServiceListaUser.post('/findlistaall', {
+            //"id_user": objUser,
+            "id_user": 'marcosgbr19@gmail.com'
         })
         
         let arraResponseLista = await responseLista.data;
-        await setNameLista(arraResponseLista);
-        console.log('arraResponseLista: ', arraResponseLista)
+
+        await setNameLista('Nova lista 1');
+        //console.log('arraResponseLista: ', arraResponseLista)
         console.log('nameLista: ', nameLista)
 
 
         //console.log('objProdutoEscolhido--> ', objProduto)
 
 
-        await setObjProdutoEscolhido(item)
+        await setObjProdutoEscolhido(item)  */
         //teste  = objProduto;
         //await setNameLista(arraResponseLista);
 
@@ -177,7 +250,7 @@ export default function Pesquisa(props) {
         
         //console.log('teste: ', teste[0].descricao)
         //console.log('objProdutoEscolhidoobjProdutoEscolhidoobjProdutoEscolhidoobjProdutoEscolhido',objProduto)
-        if (responseLista.data.status === 0) {
+      /*  if (responseLista.data.status === 0) {
             setModalVisibleSemLista(true);
         } else {
           console.log('ABRIR MODAL DE ADICIONAR PRODUTO NA LISTA')
@@ -185,7 +258,7 @@ export default function Pesquisa(props) {
           
 
           // modalVisibleAddProduto, setModalVisibleAddProduto
-        }
+        }  */
         
         
         /*const responseLista = await ServiceListaUser.post('/createlista', {
@@ -207,7 +280,7 @@ export default function Pesquisa(props) {
 
    
     if (objProdutoEscolhido) {
-      console.log('objProdutoEscolhido: ', objProdutoEscolhido)
+      console.log('objProdutoEscolhido: --> no IF ', objProdutoEscolhido.descricao)
       //console.log('objProdutoEscolhido: ', objProdutoEscolhido)
       return (
         <Modal
@@ -215,13 +288,13 @@ export default function Pesquisa(props) {
         transparent={true}
         visible={modalVisibleAddProduto}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
+          //Alert.alert("Modal has been closed.");
           setModalVisibleAddProduto(!modalVisibleAddProduto);
         }}
       >
         <View style={stylesCreate.centeredView2}>
           <View style={stylesCreate.modalView2}>
-          <Text style={stylesCreate.modalText2}>Adicionar na lista <Text style={{fontWeight: 'bold',color: '#8B80FC'}}>{nameLista[0].nome_lista}</Text></Text>
+          <Text style={stylesCreate.modalText2}>Adicionar na lista <Text style={{fontWeight: 'bold',color: '#8B80FC'}}>{listaPadraoAdd}</Text></Text>
              <TouchableOpacity style={{width: '100%', backgroundColor: '#8B80FC', borderRadius: 39, 
                flexDirection: 'row', marginTop: '2%'}}>
                   <Image source={require('../../assets/qrcode/qr-code.png')} 
@@ -288,6 +361,10 @@ export default function Pesquisa(props) {
 
                 <View style={{ height: '86%', alignItems: 'center', }}>
 
+                {dataServiceprod?.status === 'vazio' &&
+                  <Text style={{fontWeight: '700', fontSize: 20}}>{dataServiceprod.mensagem}</Text>
+                  
+                }
               
 
                 <FlatList
@@ -332,7 +409,7 @@ export default function Pesquisa(props) {
         transparent={true}
         visible={modalVisibleSemLista}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
+          //Alert.alert("Modal has been closed.");
           setModalVisibleSemLista(!modalVisibleSemLista);
         }}
       >
@@ -381,13 +458,13 @@ export default function Pesquisa(props) {
         transparent={true}
         visible={modalVisibleAddProduto}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
+          //Alert.alert("Modal has been closed.");
           setModalVisibleAddProduto(!modalVisibleAddProduto);
         }}
       >
         <View style={stylesCreate.centeredView2}>
           <View style={stylesCreate.modalView2}>
-          <Text style={stylesCreate.modalText2}>Adicionar na lista <Text style={{fontWeight: 'bold',color: '#8B80FC'}}>{nameLista[0].nome_lista}</Text></Text>
+          <Text style={stylesCreate.modalText2}>Adicionar na lista <Text style={{fontWeight: 'bold',color: '#8B80FC'}}>{listaPadraoAdd}</Text></Text>
              <TouchableOpacity style={{width: '100%', backgroundColor: '#8B80FC', borderRadius: 39, 
                flexDirection: 'row', marginTop: '2%'}}>
                   <Image source={require('../../assets/qrcode/qr-code.png')} 
@@ -638,7 +715,7 @@ const stylesCreate = StyleSheet.create({
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
+          //Alert.alert("Modal has been closed.");
           setModalVisible(!modalVisible);
         }}
       >

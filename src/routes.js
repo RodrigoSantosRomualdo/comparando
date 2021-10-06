@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState} from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
@@ -23,6 +23,7 @@ const Tab = createMaterialBottomTabNavigator();
 
 // Componente do MENU INFERIOR
 const HomeTabs = () => {
+
     return (
         <Tab.Navigator 
         initialRouteName=""
@@ -62,86 +63,90 @@ const HomeTabs = () => {
 
 
 const Routes = () => {
-
-
-    return (
-        <NavigationContainer>
-            <StatusBar
-        barStyle = "default"
-        hidden = {false}
-        backgroundColor = "#E5E5E5"
-        translucent = {false}
-        networkActivityIndicatorVisible = {true}
-      />
-        <Stack.Navigator>
-          <Stack.Screen
-            name="InicioHome"
-            component={HomeTabs}
-            options={{headerShown: false}}
+   
+        return (
+            <NavigationContainer>
+                <StatusBar
+            barStyle = "default"
+            hidden = {false}
+            backgroundColor = "#E5E5E5"
+            translucent = {false}
+            networkActivityIndicatorVisible = {true}
+          />
+            <Stack.Navigator>
+              <Stack.Screen
+                name="InicioHome"
+                component={HomeTabs}
+                options={{headerShown: false}}
+                
+                 />
+    
+              <Stack.Screen
+                name="Combustivel"
+                options={{headerShown: false}}
+                component={HomeTabs}
+                 />
+    
+             <Stack.Screen
+                name="MinhasLista"
+                component={MinhasLista}
+                options={{headerShown: false}}
+                 />
+    
+            <Stack.Screen
+                name="Pesquisa"
+                component={Pesquisa}
+                options={{headerShown: false}}
+                 />
+    
+            <Stack.Screen
+                name="ProdutoEscolhido"
+                component={ProdutoEscolhido}
+                options={{headerShown: false}}
+                 />
+    
+            <Stack.Screen
+                name="MinhaListaProduto"
+                component={MinhaListaProduto}
+                options={{headerShown: false}}
+                />
+    
+            <Stack.Screen
+                name="Scanner"
+                component={Scanner}
+                options={{headerShown: false}}
+                />
+    
+            <Stack.Screen
+                name="PesquisaQrcode"
+                component={PesquisaQrcode}
+                options={{headerShown: false}}
+                />
+    
+                <Stack.Screen
+                name="LogarCriarConta"
+                component={LogarCriarConta}
+                options={{headerShown: false}}
+                />
             
-             />
-
-          <Stack.Screen
-            name="Combustivel"
-            options={{headerShown: false}}
-            component={HomeTabs}
-             />
-
-         <Stack.Screen
-            name="MinhasLista"
-            component={MinhasLista}
-            options={{headerShown: false}}
-             />
-
-        <Stack.Screen
-            name="Pesquisa"
-            component={Pesquisa}
-            options={{headerShown: false}}
-             />
-
-        <Stack.Screen
-            name="ProdutoEscolhido"
-            component={ProdutoEscolhido}
-            options={{headerShown: false}}
-             />
-
-        <Stack.Screen
-            name="MinhaListaProduto"
-            component={MinhaListaProduto}
-            options={{headerShown: false}}
-            />
-
-        <Stack.Screen
-            name="Scanner"
-            component={Scanner}
-            options={{headerShown: false}}
-            />
-
-        <Stack.Screen
-            name="PesquisaQrcode"
-            component={PesquisaQrcode}
-            options={{headerShown: false}}
-            />
-
-        <Stack.Screen
-            name="LogarCriarConta"
-            component={LogarCriarConta}
-            options={{headerShown: false}}
-            />
-
-        <Stack.Screen
-            name="CriarConta"
-            component={CriarConta}
-            options={{headerShown: false}}
-            />
-
-
-        </Stack.Navigator>
-        
-      </NavigationContainer>
-
-
-    )
+    
+                <Stack.Screen
+                name="CriarConta"
+                component={CriarConta}
+                options={{headerShown: false}}
+                />
+            
+            
+    
+            
+    
+    
+            </Stack.Navigator>
+            
+          </NavigationContainer>
+    
+        )
+    
 }
 
 export default Routes;
