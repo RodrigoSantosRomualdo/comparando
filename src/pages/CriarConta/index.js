@@ -4,6 +4,7 @@ import { TextInput } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import sistemaUsuario from '../../services/sistemaUsuario';
 import Storage from '../../services/Storage';
+import { useKeyboard } from '@react-native-community/hooks'
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import servicesSupIdDescProdUnidade from '../../services/servicesSupIdDescProdUnidade'
@@ -35,6 +36,9 @@ export default function CriarConta(props) {
     const [objProdutoEscolhido, setObjProdutoEscolhido] = useState(null)
     //var options =["Home","Savings","Car","GirlFriend"];
     //console.log(props.route.params)
+
+    const keyboardd = useKeyboard()
+    console.log('keyboard isKeyboardShow CRIAR CONTA: ', keyboardd.keyboardShown)
 
       // TRAZ O E-MAIL OU O TOKEN PARA TRAZER O ID DO USUARIO PARA SALVAR PRODUTOS NA LISTA
     
@@ -102,19 +106,35 @@ export default function CriarConta(props) {
     return (
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
 
-            <View style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
-                <TouchableOpacity style={{display: 'flex', alignSelf: 'center', width: '85%', height: '13%', marginBottom: '2%'}}>
-                <ImageBackground source={require('../../assets/mercado/mercado.png')} style={styles.image}>
-                <Text style={styles.text}>Logo Ex</Text>
-                </ImageBackground>
-                </TouchableOpacity>
-                
-            </View >
-            <Text style={{marginTop: '10%'}}>Criar Conta</Text>
+<View>
+          {keyboardd.keyboardShown && 
+          <Image
+          style={{
+            resizeMode: "contain",
+            marginTop: '20%',
+            height: 100,
+            width: 110
+          }}
+          source={require("../../assets/img-login.png")}
+        />}
+
+          {!keyboardd.keyboardShown && 
+          <Image
+          style={{
+            resizeMode: "contain",
+            height: 200,
+            width: 300
+          }}
+          source={require("../../assets/img-login.png")}
+        />}
+          
+          
+        
+        </View>
 
             
 
-            <View style={{marginTop: '10%'}}>
+            <View style={{marginTop: '3%'}}>
               <Text>Endereço E-mail</Text>
               <View style={{paddingLeft: 5,backgroundColor: '#D9D7DB', alignItems: 'center', flexDirection: 'row',  width: '90%', height: 50, borderRadius: 8}}>
               <Octicons name="mail" size={30} color="#6D28D9" />
@@ -130,7 +150,7 @@ export default function CriarConta(props) {
               </View>
             </View>
 
-            <View style={{marginTop: '7%'}}>
+            <View style={{marginTop: '5%'}}>
               <Text>Senha</Text>
               <View style={{paddingLeft: 5,backgroundColor: '#D9D7DB', alignItems: 'center', flexDirection: 'row',  width: '90%', height: 50, borderRadius: 8}}>
               <Octicons name="lock" size={30} color="#6D28D9" />
@@ -148,7 +168,7 @@ export default function CriarConta(props) {
               </View>
             </View>
 
-            <View style={{marginTop: '3%'}}>
+            <View style={{marginTop: '2%'}}>
               <Text>Confirmar Senha</Text>
               <View style={{paddingLeft: 5,backgroundColor: '#D9D7DB', alignItems: 'center', flexDirection: 'row',  width: '90%', height: 50, borderRadius: 8}}>
               <Octicons name="lock" size={30} color="#6D28D9" />
@@ -167,7 +187,7 @@ export default function CriarConta(props) {
             </View>
 
             <View style={{width: '90%', borderEndColor: 'black', borderBottomWidth: 1}}>
-                <TouchableOpacity style={{marginTop: '15%',padding: 15, backgroundColor: '#6D28D9', justifyContent: 'center', alignItems: 'center',
+                <TouchableOpacity style={{marginTop: '12%',padding: 15, backgroundColor: '#6D28D9', justifyContent: 'center', alignItems: 'center',
                     borderRadius: 5, marginVertical: 5, height: 60, marginBottom: '5%'}} onPress={() => criandoConta()} >
                     <Text style={{fontSize: 16, padding: 25, color: '#ffffff'}}>Criar Conta</Text>
                 </TouchableOpacity>

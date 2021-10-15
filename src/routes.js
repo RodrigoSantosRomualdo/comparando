@@ -7,16 +7,19 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import Home from './pages/Home'
-import Combustivel from './pages/Combustivel'
-import MinhasLista from './pages/MinhasLista'
+import Home from './pages/Home';
+import Combustivel from './pages/Combustivel';
+import CombustivelPreco from './pages/CombustivelPreco';
+
+import MinhasLista from './pages/MinhasLista';
 import Pesquisa from './pages/Pesquisa';
-import ProdutoEscolhido from './pages/ProdutoEscolhido'
+import ProdutoEscolhido from './pages/ProdutoEscolhido';
 import MinhaListaProduto from './pages/MinhaListaProduto';
 import Scanner from './pages/Scanner';
 import PesquisaQrcode from './pages/PesquisaQrCode';
-import LogarCriarConta from './pages/LogarCriarConta'
-import CriarConta from './pages/CriarConta'
+import LogarCriarConta from './pages/LogarCriarConta';
+import CriarConta from './pages/CriarConta';
+import MercadoPesquisa from './pages/MercadoPesquisa';
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -86,6 +89,12 @@ const Routes = () => {
                 options={{headerShown: false}}
                 component={HomeTabs}
                  />
+
+                <Stack.Screen
+                name="CombustivelPreco"
+                component={CombustivelPreco}
+                options={{headerShown: false}}
+                />
     
              <Stack.Screen
                 name="MinhasLista"
@@ -135,13 +144,20 @@ const Routes = () => {
                 component={CriarConta}
                 options={{headerShown: false}}
                 />
+
+                <Stack.Screen
+                name="MercadoPesquisa"
+                component={MercadoPesquisa}
+                options={{headerShown: false}}
+                />
             
             
-    
-            
-    
-    
+
             </Stack.Navigator>
+            
+
+
+            
             
           </NavigationContainer>
     

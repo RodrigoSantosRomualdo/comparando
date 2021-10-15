@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {View, Text,Alert, ImageBackground, ActivityIndicator, Linking, Button, StyleSheet, TouchableOpacity, Image, FlatList,Modal, Pressable, Picker, DrawerLayoutAndroidBase, RecyclerViewBackedScrollViewBase} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import { useKeyboard } from '@react-native-community/hooks'
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import servicesSupIdDescProdUnidade from '../../services/servicesSupIdDescProdUnidade'
@@ -21,6 +22,7 @@ export default function LogarCriarConta(props) {
     const [valueEmail ,setValueEmail] = useState('')
     const [valuePassword ,setValuePassword] = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
+
     const [userId, setUserId] = useState(null)
     const [userIdExiste, setUserIdExiste] = useState(false)
     const [erroLogin, setErroLogin] = useState(false)
@@ -141,6 +143,9 @@ export default function LogarCriarConta(props) {
 
     } 
 
+    const keyboardd = useKeyboard()
+    console.log('keyboard isKeyboardShow CONTA: ', keyboardd.keyboardShown)
+
     async function persistLogin(email, name, photoUrl) {
       console.log('CHAMOU A FUNCAO AQUI')
       console.log(email, name, photoUrl)
@@ -240,18 +245,34 @@ export default function LogarCriarConta(props) {
     return (
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
 
-          <View style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
-              <TouchableOpacity style={{display: 'flex', alignSelf: 'center', width: '85%', height: '13%', marginBottom: '2%'}}>
-              <ImageBackground source={require('../../assets/mercado/mercado.png')} style={styles.image}>
-              <Text style={styles.text}>Logo Ex</Text>
-              </ImageBackground>
-              </TouchableOpacity>
+        <View>
+          {keyboardd.keyboardShown && 
+          <Image
+          style={{
+            resizeMode: "contain",
+            marginTop: '20%',
+            height: 110,
+            width: 120
+          }}
+          source={require("../../assets/img-login.png")}
+        />}
 
-              
-          </View >
-
-
-          <View style={{marginTop: '30%'}}>
+          {!keyboardd.keyboardShown && 
+          <Image
+          style={{
+            resizeMode: "contain",
+            height: 200,
+            width: 300
+          }}
+          source={require("../../assets/img-login.png")}
+        />}
+          
+          
+        
+        </View>
+       
+        
+          <View style={{ marginTop: '20%'}}>
           <View style={{paddingLeft: 5,backgroundColor: '#D9D7DB', alignItems: 'center', flexDirection: 'row',  width: '90%', height: 50, borderRadius: 8}}>
           <Octicons name="mail" size={30} color="#6D28D9" />
           <TextInput
@@ -290,8 +311,9 @@ export default function LogarCriarConta(props) {
                   </Text>
                   </View>
               )}
+              
               {!isSubmitting && (
-                <TouchableOpacity style={{marginTop: '15%',padding: 15, backgroundColor: '#6D28D9', justifyContent: 'center', alignItems: 'center',
+                <TouchableOpacity style={{marginTop: '10%',padding: 15, backgroundColor: '#6D28D9', justifyContent: 'center', alignItems: 'center',
                 borderRadius: 5, marginVertical: 5, height: 60}} onPress={() => funcaoLogin()}  >
                 <Text style={{fontSize: 16, padding: 25, color: '#ffffff'}}>Login</Text>
                 </TouchableOpacity>
@@ -330,10 +352,23 @@ export default function LogarCriarConta(props) {
 
 }
 
+/*
+<View style={{backgroundColor: 'red', marginTop: '3%',justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
+              <TouchableOpacity style={{display: 'flex', alignSelf: 'center', width: '85%', height: '25%', marginBottom: '0%',
+             alignItems: 'center'}}>
+              <ImageBackground source={require('../../assets/img-login.png')} style={styles.image}>
+              </ImageBackground>
+              </TouchableOpacity>
 
+              
+          </View >
+
+
+*/
 
 
 const stylesCreate = StyleSheet.create({
+  
     centeredView: {
       flex: 1,
       justifyContent: "center",

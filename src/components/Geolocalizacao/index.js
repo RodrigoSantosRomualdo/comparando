@@ -20,9 +20,22 @@ export default function MapLocalizacao() {
         return;
       }
 
-      let location = await Location?.getCurrentPositionAsync({});
-      setLocation(location);
-    
+
+      //let location = await Location?.getCurrentPositionAsync({});
+      //console.log(location)
+      
+      /*
+      
+      if (location) {
+        console.log('PASSOU AQUI NO LOCATION ')
+        console.log(location)
+        setLocation(location);
+      } else {
+        console.log('NAO CONSEGUIMOS PEGAR A SUA LOCALIZAÇÂO')
+      } 
+      
+      
+
       if (!cityApi) {
       let text = 'Waiting..';
         if (errorMsg) {
@@ -39,7 +52,7 @@ export default function MapLocalizacao() {
             console.log('PEGOU A CIDADE PELO GPS API HG-BRASIL: ',response.data.results.city)
             setCityApi(response.data.results.city)
         }
-    }
+    }  */
     })();
   }, []);
 
@@ -47,7 +60,7 @@ export default function MapLocalizacao() {
 
     return (
         <View>
-            <Text>{cityApi}</Text>
+            <Text>Vitória - ES</Text>
         </View>
       
     )

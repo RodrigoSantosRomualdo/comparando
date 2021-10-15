@@ -6,7 +6,8 @@ import axios from 'axios';
 //export const key = '7eed1d01';
 
 const serviceUser =  axios.create({
-  baseURL: 'http://192.168.1.92:3000/users'
+  //baseURL: 'http://192.168.1.92:3000/users'
+  baseURL: 'https://comparando-api.herokuapp.com/users'
 });
 
 export default serviceUser;

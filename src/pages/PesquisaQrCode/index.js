@@ -34,6 +34,8 @@ import ServiceListaUser from '../../services/listaUser'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './styles';
 import Storage from '../../services/Storage';
+import * as Location from 'expo-location';
+import servicesLocationSup from  '../../services/servicesLocationSup'
 
 export default function PesquisaQrcode(props) {
     console.log('props: ', props.route.params.codigo_barras)
@@ -41,6 +43,8 @@ export default function PesquisaQrcode(props) {
     const navigation = useNavigation();
     const [userId, setUserId] = useState(Storage.buscarUserLogin('value'))
     const [listaPadraoAdd, setListaPadraoAdd] = useState();
+    const [supermecadoId, setSupermecadoId] = useState()
+    const [supermecadoDistancia, setSupermecadoDistancia] = useState()
     
     const [modalVisibleSemLista, setModalVisibleSemLista] = useState(false);
     const [modalVisibleAddProduto, setModalVisibleAddProduto] = useState(false);
@@ -58,11 +62,34 @@ export default function PesquisaQrcode(props) {
       useEffect(() => {
         (async () => {
             const listaPadraoAdd = await Storage.buscarListaPadrao('lista')
+
+            let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
+            //setLocation(location);
+            //console.log('Latitude: ',location.coords.latitude)
+            //console.log('Longitude: ',location.coords.longitude)      const json = await JSON.stringify({ answer: 42 })
+            const responseLocation = await servicesLocationSup.post('/', { coordinates: [location.coords.latitude, location.coords.longitude]});
+            let date = responseLocation.data;
+            
+            console.log('date: ',date)
+            let arraySupermecado = [];
+            let arraySupermecadoDiscancia = [];
+            date.map(async function(item) {
+            
+            await arraySupermecado.push(item._id)
+            await arraySupermecadoDiscancia.push(item)
+            
+            })
+            await setSupermecadoId(arraySupermecado)
+            await setSupermecadoDistancia(arraySupermecadoDiscancia)
+
+            console.log('arraySupermecado:::: ',arraySupermecado)
+
             console.log('listaPadraoAddlistaPadraoAddlistaPadraoAddlistaPadraoAdd ', listaPadraoAdd)
             await setListaPadraoAdd(listaPadraoAdd)
 
             const response = await servicesSupIdDescProdUnidade.post('/buscar-codigo-barras-findall',{
-                codigo_barras: props.route.params?.codigo_barras, 
+                codigo_barras: props.route.params?.codigo_barras,
+                id: arraySupermecado
             })
             //console.log('useEffect: ',response.data)
 
@@ -137,11 +164,16 @@ export default function PesquisaQrcode(props) {
               ],
             )
           } else if (responseLista.data.status !== 0) {
-            console.log('responseLista::: ', responseLista.data)
-            console.log('objProdutoEscolhido--> ', item)
-            await setObjProdutoEscolhido(item)
-            setModalVisibleAddProduto(true)
-            //setModalVisible(true);
+            const resultList = await Storage.buscarUserLogin('lista');
+            console.log('resultList:: ', resultList)
+            if (resultList === null) {
+              console.log('RESULT LIST NULL')
+              navigation.navigate('MinhasLista', { userNull: true})
+            } else {
+              await setObjProdutoEscolhido(item)
+              setModalVisibleAddProduto(true)
+
+            }
   
           }
           

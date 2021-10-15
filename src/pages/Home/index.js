@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Image, Text, View, ImageBackground, TouchableOpacity, TextInput, Keyboard, TouchableWithoutFeedback  } from 'react-native';
 import { SvgUri } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useKeyboard } from '@react-native-community/hooks'
 import styles from './styles';
 import * as Location from 'expo-location';
@@ -15,14 +16,16 @@ export default function Home({navigation}) {
     const [location, setLocation] = useState(null);
     const [supermecadoId, setSupermecadoId] = useState()
     const [supermecadoDistancia, setSupermecadoDistancia] = useState()
+    const [distancia, setDistancia] = useState(10000)
+    const [desativaEnquantoDecide, setDesativaEnquantoDecide] = useState(false)
   
     const keyboardd = useKeyboard()
-    console.log('keyboard isKeyboardShow: ', keyboardd.keyboardShown)
-    console.log('keyboard keyboardHeight: ', keyboardd.keyboardHeight)
-    console.log('keyboard coordinates: ', keyboardd.coordinates)
+    //console.log('keyboard isKeyboardShow: ', keyboardd.keyboardShown)
+    //console.log('keyboard keyboardHeight: ', keyboardd.keyboardHeight)
+    //console.log('keyboard coordinates: ', keyboardd.coordinates)
 
     useEffect(() => {
-      console.log('USEEFFECT')
+      console.log('USEEFFECT HOME')
       if(!keyboardd.keyboardShown) {
         console.log('O QUE ESTA NO VALUE: ', valueText)
         if(valueText) {
@@ -34,20 +37,20 @@ export default function Home({navigation}) {
     });
 
     const PesquisaProduto  = async () => {
-
       if (!supermecadoId) {
-      console.log('VAI PARA PESQUISAR PRODUTO');
-      console.log('VALUETEXT NÂO ESTA VAZIO IR PARA PESQUISA: ', valueText);
-      
-
-      let location = await Location.getCurrentPositionAsync({});
+        console.log('VAI PARA PESQUISAR PRODUTO');
+        console.log('VALUETEXT NÂO ESTA VAZIO IR PARA PESQUISA: ', valueText);
+        // https://github.com/expo/expo/issues/5504
+      let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.High});
       //setLocation(location);
       //console.log('Latitude: ',location.coords.latitude)
-      //console.log('Longitude: ',location.coords.longitude)
-
-      const json = await JSON.stringify({ answer: 42 });
-      const response = await servicesLocationSup.post('/', { coordinates: [location.coords.latitude, location.coords.longitude]});
-      let date = response.data;
+      //console.log('Longitude: ',location.coords.longitude)      const json = await JSON.stringify({ answer: 42 })
+      let date;
+      if (location) {
+        const response = await servicesLocationSup.post('/', { coordinates: [location.coords.latitude, location.coords.longitude]});
+        date = response.data;
+      }
+      
       //console.log(response.data[0]._id)
       //setSupermecadoId(response.data)
       let arraySupermecado = [];
@@ -64,27 +67,24 @@ export default function Home({navigation}) {
       await setSupermecadoId(arraySupermecado)
       await setSupermecadoDistancia(arraySupermecadoDiscancia)
       //console.log('AQUI ---------------------------> ', arraySupermecadoDiscancia.id)
-      //console.log('supermecadoId: ', arraySupermecado)
-      //console.log('supermecadoId: ', supermecadoId)
-      //console.log('supermecadoId - BUSCOU DO BANCO ', arraySupermecado)
+
       navigation.navigate('Pesquisa', 
       {namePesquisa: valueText, 
-      filtro: '5KG',
       arraySupermecado,
       arraySupermecadoDiscancia
       });
-
+      // filtro: '5KG',
     } else {
       //console.log('JA EXISTE ID DO SUPERMECADO: ', supermecadoId)
       console.log('JA EXISTE ID DO SUPERMECADO: ')
       navigation.navigate('Pesquisa', 
       {namePesquisa: valueText, 
-      filtro: '5KG',
       supermecadoId,
       supermecadoDistancia
       });
+      //filtro: '5KG',
 
-    }
+    }  
 
       
     }
@@ -116,43 +116,57 @@ export default function Home({navigation}) {
           </View>
 
           {/* INPUT TEXT COM FILTRO  */}
-          <View style={{paddingLeft: '5%', paddingRight: '5%'}}>
+          <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: '2%' ,}}>
           
           <TextInput
-                style={{height: 60, margin: 12, padding: 10, 
-                  backgroundColor: '#D9D7DB', borderRadius: 20}}
+                style={{width: '80%' ,height: 60,  padding: 10, 
+                  backgroundColor: '#D9D7DB', 
+                  borderBottomLeftRadius: 20 
+                  ,borderTopLeftRadius: 20, borderBottomRightRadius: 20, borderTopRightRadius: 20}}
                   placeholder="Pesquisar Produto"
                   multiline={false}
                   value={valueText}
                   onChangeText={valueText => setValueText(valueText)}
                   onSubmitEditing={Keyboard.dismiss}
+                  
               />
+            
+            {false && 
+              <TouchableOpacity style={{width: '10%',height: 60,justifyContent: 'center', backgroundColor: '#D9D7DB',
+              borderBottomRightRadius: 20, borderTopRightRadius: 20, }}>
+                  <MaterialCommunityIcons name="filter-outline" size={24} color="black" />
+              </TouchableOpacity>
+
+            }
+            
+           
 
           </View>
               {/* CODIGO DE BARRAS  */}
-          <TouchableOpacity style={{flexDirection: "row", justifyContent: "center", marginBottom: '15%' }} onPress={()=> navigation.navigate('Scanner')}>
+          <TouchableOpacity style={{marginTop: '5%' , flexDirection: "row", justifyContent: "center", marginBottom: '15%' }} onPress={()=> navigation.navigate('Scanner')}>
 
                 <View style={{marginRight: '5%'}}>
-                  <Text style={{fontSize: 15, color: '#AEAEAE'}}>Código de barras</Text></View>
+                  <Text style={{fontSize: 18, color: '#AEAEAE'}}>Código de barras</Text></View>
                 
                 <View style={{alignSelf:"center"}}><Image source={require('../../assets/qrcode/qr-code.png')}/></View>
                 
           </TouchableOpacity>
           
-          
-          <TouchableOpacity style={{display: 'flex', alignSelf: 'center', width: '85%', height: '13%', marginBottom: '2%'}}>
+            <TouchableOpacity style={{display: 'flex', alignSelf: 'center', width: '85%', height: '13%', marginBottom: '2%'}}
+            onPress={()=> {navigation.navigate('MercadoPesquisa')}}>
             <ImageBackground source={require('../../assets/mercado/mercado.png')} style={styles.image}>
               <Text style={styles.text}>Mercado</Text>
             </ImageBackground>
           </TouchableOpacity>
+          
+          
 
-
-          <TouchableOpacity style={{display: 'flex', alignSelf: 'center', width: '85%', height: '13%', marginBottom: '2%'}}>
+          <TouchableOpacity style={{display: 'flex', alignSelf: 'center', width: '85%', height: '13%', marginBottom: '2%'}}
+          onPress={() => {navigation.navigate('Combustivel')}}>
             <ImageBackground source={require('../../assets/combustivel/combustivel.png')} style={styles.image}>
               <Text style={styles.text}>Combustível</Text>
             </ImageBackground>
           </TouchableOpacity>
-                  
         
       </View>
     )

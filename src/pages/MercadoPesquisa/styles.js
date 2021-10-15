@@ -1,10 +1,6 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-   
-  
-
-    
     container: {
         flex: 1,
         backgroundColor: '#E5E5E5',
@@ -26,14 +22,12 @@ const styles = StyleSheet.create({
     image: {
         //backgroundColor: 'red',
        // marginTop: '5%',
-        //width: '100%',
+        width: '100%',
         //marginLeft: '5%',
         //marginRight: '5%'
         //display: 'flex',
         //alignSelf: 'center',
-        //position: 'relative',
-        width: 140,
-        height: 120
+        position: 'relative', 
         
         
       },
@@ -45,7 +39,7 @@ const styles = StyleSheet.create({
         textAlign: "left",
         marginLeft: "10%"
         //backgroundColor: "#000000c0"
-      }  
+      }
 
     
 })
