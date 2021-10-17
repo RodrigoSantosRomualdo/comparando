@@ -636,14 +636,14 @@ return (
 
             <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '16%'}}>
             {lista &&
-              <TouchableOpacity style={{marginRight: '15%'}} onPress={() => EditList()}>
-                  <MaterialCommunityIcons name="playlist-edit" size={25} color="black" />
+              <TouchableOpacity style={{marginRight: '15%',}} onPress={() => EditList()}>
+                  <MaterialCommunityIcons name="playlist-edit" size={35} color="black" />
                </TouchableOpacity>
             }
 
             {lista && 
               <TouchableOpacity style={{marginRight: '10%'}} onPress={() => deleteList()}>
-                <MaterialCommunityIcons name="delete-sweep-outline" size={25} color="black" />
+                <MaterialCommunityIcons name="delete-sweep-outline" size={35} color="black" />
               </TouchableOpacity>
             }
             

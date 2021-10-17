@@ -143,7 +143,7 @@ export default function Home({navigation}) {
 
           </View>
               {/* CODIGO DE BARRAS  */}
-          <TouchableOpacity style={{marginTop: '5%' , flexDirection: "row", justifyContent: "center", marginBottom: '15%' }} onPress={()=> navigation.navigate('Scanner')}>
+          <TouchableOpacity style={{marginTop: '1%' , flexDirection: "row", justifyContent: "center", marginBottom: '15%' }} onPress={()=> navigation.navigate('Scanner')}>
 
                 <View style={{marginRight: '5%'}}>
                   <Text style={{fontSize: 18, color: '#AEAEAE'}}>Código de barras</Text></View>

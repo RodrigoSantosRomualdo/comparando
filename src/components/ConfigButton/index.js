@@ -1,10 +1,11 @@
 import React from 'react';
-import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Button, Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Updates } from 'expo';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SvgUri } from 'react-native-svg';
 import Storage from '../../services/Storage'
 import {Restart} from 'fiction-expo-restart';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function ConfigButton() {
 
@@ -26,35 +27,11 @@ export default function ConfigButton() {
 
     return (
         <TouchableOpacity onPress={() => mostraMenu()}>
-            <SvgUri
-              width="70"
-              height="40"
-              uri="https://msmultisistema.com/config.svg"
-            />
+          <MaterialCommunityIcons style={{marginLeft: '15%'}} name="microsoft-xbox-controller-menu" size={30} color="#8B80FC" />
+            
         </TouchableOpacity>
 
       
     )
   }
 
-  /*
-<SvgUri
-              width="70"
-              height="40"
-              uri="https://msmultisistema.com/config.svg"
-            />
-
-
-
-<View style={{flexDirection: 'row', alignSelf: 'center'}}>
-        <Icon name="map-marker-multiple-outline" color={'#000'} size={20} />
-        <Text style={{fontSize: 15}}>Vitóriaaaaa</Text>
-      </View>
-
-
-
-
-
-
-
-  */

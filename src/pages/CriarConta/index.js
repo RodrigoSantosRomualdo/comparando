@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Alert, Text, ImageBackground,Linking, Button, StyleSheet, TouchableOpacity, Image, FlatList,Modal, Pressable, Picker, DrawerLayoutAndroidBase, RecyclerViewBackedScrollViewBase} from 'react-native';
+import {View, Alert, Text,ActivityIndicator, ImageBackground,Linking, Button, StyleSheet, TouchableOpacity, Image, FlatList,Modal, Pressable, Picker, DrawerLayoutAndroidBase, RecyclerViewBackedScrollViewBase} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import sistemaUsuario from '../../services/sistemaUsuario';
@@ -12,6 +12,7 @@ import serviceUser from '../../services/serviceUser'
 import ServiceListaUser from '../../services/listaUser'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Octicons, Fontisto } from '@expo/vector-icons';
+import {Restart} from 'fiction-expo-restart';
 
 import styles from './styles';
 
@@ -24,6 +25,7 @@ export default function CriarConta(props) {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [userId, setUserId] = useState()
     const [erroLogin, setErroLogin] = useState(false)
+   // const [isSubmiting, setIsSubmiting] = useState(false)
 
     const [dataServiceprod, setDataServiceprod ] = useState()
     const [modalVisibleSemLista, setModalVisibleSemLista] = useState(false);
@@ -51,18 +53,21 @@ export default function CriarConta(props) {
 
     // valuePasswordConfirmacao ,setValuePasswordConfirmacao
     async function criandoConta() {
-
+      setIsSubmitting(true)
       if (valueEmail === "") {
-        return Alert.alert('Error', `Campos E-mail vazio.`,
+        Alert.alert('Error', `Campos E-mail vazio.`,
           [{ text: 'Tentar Criar Novamente', },], )
+          setIsSubmitting(false)
       }
       else if (valuePassword === "" || valuePasswordConfirmacao === "") {
-        return Alert.alert('Error', `Algum campo da senha está vazio.`,
+        Alert.alert('Error', `Algum campo da senha está vazio.`,
           [{ text: 'Tentar Criar Novamente', },], )
+          setIsSubmitting(false)
       }
       else if (valuePassword !== valuePasswordConfirmacao) {
-        return Alert.alert('Error', `O campo senha e confirmação de senha estão diferentes.`,
+        Alert.alert('Error', `O campo senha e confirmação de senha estão diferentes.`,
           [{ text: 'Tentar Criar Novamente', },], )
+          setIsSubmitting(false)
       } else if (valueEmail != "" && valuePassword === valuePasswordConfirmacao) {
         console.log('PASSOU AQUI GUERREIRO')
         const data = await sistemaUsuario.post('/signup', {
@@ -71,8 +76,9 @@ export default function CriarConta(props) {
         })
         if (data.data.status === 'FAILED') {
           console.log('data: ', data.data)
-          return Alert.alert('Error', `${data.data.message}`,
+          Alert.alert('Error', `${data.data.message}`,
           [{ text: 'Tentar Criar Novamente', },], )
+          setIsSubmitting(false)
 
         }  else if (data.data.status === 'SUCCESS') {
           //(data.data.status === 'FAILED')
@@ -81,27 +87,33 @@ export default function CriarConta(props) {
           console.log('email: ', email)
           await Storage.armazenarUserLogin('value', email)
           await Storage.buscarUserLogin('value')
-          
+          setIsSubmitting(false)
           //navigation.navigate('MinhasLista', {});
-          navigation.reset({
-            index: 0,
-            routes: [
+          Alert.alert(
+            //title
+            'Atenção',
+            //body
+            `Conta criada com sucesso, clique no Ok para carregar o seu perfil!`,
+            [
               {
-                name: 'MinhasLista',
-                params: { email: email },
+                text: 'Ok', onPress: (() => carregarPerfilLogin()) ,
               },
             ],
-          })
+          )
+         
+
         }
         
 
       }
 
+  }
 
-
-
-
-      }
+      function carregarPerfilLogin() {
+        console.log('CARREGAR PERFIL CRIAR CONTA')
+  
+        Restart();
+      } 
 
     return (
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -186,13 +198,28 @@ export default function CriarConta(props) {
               </View>
             </View>
 
-            <View style={{width: '90%', borderEndColor: 'black', borderBottomWidth: 1}}>
-                <TouchableOpacity style={{marginTop: '12%',padding: 15, backgroundColor: '#6D28D9', justifyContent: 'center', alignItems: 'center',
+            
+
+             {!isSubmitting && (
+                <View style={{width: '90%', borderEndColor: 'black', borderBottomWidth: 1}}>
+                  <TouchableOpacity style={{marginTop: '12%',padding: 15, backgroundColor: '#6D28D9', justifyContent: 'center', alignItems: 'center',
                     borderRadius: 5, marginVertical: 5, height: 60, marginBottom: '5%'}} onPress={() => criandoConta()} >
                     <Text style={{fontSize: 16, padding: 25, color: '#ffffff'}}>Criar Conta</Text>
-                </TouchableOpacity>
+                  </TouchableOpacity>
+                </View>
+              )}
+              {isSubmitting && (
+                <View style={{width: '90%', borderEndColor: 'black', borderBottomWidth: 1}}>
+                    <TouchableOpacity style={{marginTop: '15%', padding: 15, backgroundColor: '#6D28D9', justifyContent: 'center', alignItems: 'center',
+                    borderRadius: 5, marginVertical: 5, height: 60}} onPress={() => funcaoLogin()}  >
+                      <ActivityIndicator size="large" color="#ffffff" />
+                  </TouchableOpacity>
+                </View>
 
-             </View>
+
+
+                
+              )}
 
              <View style={{marginTop: '5%',flexDirection: 'row' ,justifyContent: 'center', alignItems: 'center', fontSize: 15}}>
                     <Text style={{justifyContent: 'center', alignItems: 'center', fontSize: 15}}>

@@ -123,7 +123,20 @@ export default function LogarCriarConta(props) {
                 //Storage.armazenarUserLogin('value', valueEmail)
                 console.log('EMAIL LOGADO::: ', valueEmail)
                 Storage.armazenarUserLogin('value', valueEmail )
-                Restart();
+
+                return Alert.alert(
+                  //title
+                  'Atenção',
+                  //body
+                  `Login realizado com sucesso, clique no Ok para carregar o seu perfil!`,
+                  [
+                    {
+                      text: 'Ok', onPress: (() => carregarPerfilLogin()) ,
+                    },
+                  ],
+              )
+
+                //Restart();
                 /*
                 console.log('RESET 1')
                 navigation.reset({
@@ -163,7 +176,20 @@ export default function LogarCriarConta(props) {
       Storage.armazenarUserLogin('value', email )
       //navigation.navigate('MinhasLista', email)
       console.log('RESET 2 ---------------------->>>>>>>>>>>>>>>..')
-      Restart();
+
+      return Alert.alert(
+        //title
+        'Atenção',
+        //body
+        `Login realizado com sucesso, clique no Ok para carregar o seu perfil!`,
+        [
+          {
+            text: 'Ok', onPress: (() => carregarPerfilLogin()) ,
+          },
+        ],
+    )
+      //   text: 'Entrar', onPress: () => navigation.navigate('LogarCriarConta') },
+     // Restart();   text: 'Tentar Novamente',
 
     /*  navigation.reset({
         index: 0,
@@ -212,6 +238,12 @@ export default function LogarCriarConta(props) {
     }
       
     }
+
+    function carregarPerfilLogin() {
+      console.log('CARREGAR PERFIL')
+
+      Restart();
+    } 
 
     const landleGoogleSignin = () => {
       const config = { 
@@ -344,7 +376,7 @@ export default function LogarCriarConta(props) {
 
                       <Text style={{color: 'blue', justifyContent: 'center', alignItems: 'center', marginTop: '5%'}}
                           onPress={() => navigation.navigate('CriarConta')}>
-                      <Text style={{fontSize: 15}}> Signup</Text>
+                      <Text style={{fontSize: 15}}> Criar Conta</Text>
                       </Text>
               </View>
 
