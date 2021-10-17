@@ -13,6 +13,7 @@ import { Octicons, Fontisto } from '@expo/vector-icons';
 import sistemaUsuario from '../../services/sistemaUsuario';
 import * as Google from 'expo-google-app-auth'
 import Storage from '../../services/Storage'
+import {Restart} from 'fiction-expo-restart';
 
 import styles from './styles';
 
@@ -109,8 +110,9 @@ export default function LogarCriarConta(props) {
                 email: valueEmail,
                 password: valuePassword
             })
-            console.log(data.status)
-            console.log(data.data.status)
+            console.log('data.data.status::: ', data.data.status)
+            //console.log(data.status)
+            //console.log(data.data.status)
             if(data.data.status === "FAILED") {
               setErroLogin(true) 
               setIsSubmitting(false)
@@ -119,9 +121,10 @@ export default function LogarCriarConta(props) {
             
             if(data.status === 200 && data.data.status === "SUCCESS" ) {
                 //Storage.armazenarUserLogin('value', valueEmail)
-                
-                Storage.armazenarUserLogin('value', email )
-
+                console.log('EMAIL LOGADO::: ', valueEmail)
+                Storage.armazenarUserLogin('value', valueEmail )
+                Restart();
+                /*
                 console.log('RESET 1')
                 navigation.reset({
                   index: 0,
@@ -131,7 +134,7 @@ export default function LogarCriarConta(props) {
                       params: { email: email },
                     },
                   ],
-                })
+                }) */
                 // DEPOIS DE BUILD NAO VOLTAR PARA O HOMER SO MEXER AQUI
 
                 //navigation.navigate('MinhasLista', valueEmail);
@@ -159,8 +162,10 @@ export default function LogarCriarConta(props) {
       console.log('datadata: ', email)
       Storage.armazenarUserLogin('value', email )
       //navigation.navigate('MinhasLista', email)
-      console.log('RESET 2')
-      navigation.reset({
+      console.log('RESET 2 ---------------------->>>>>>>>>>>>>>>..')
+      Restart();
+
+    /*  navigation.reset({
         index: 0,
         routes: [
           {
@@ -168,7 +173,7 @@ export default function LogarCriarConta(props) {
             params: { email: email },
           },
         ],
-      })
+      }) */
     } else if (!data.data.data[0]) {
       console.log('datadata NAO TEM USUARIO: ', email )
       const data = await sistemaUsuario.post('/create-user-email', {
@@ -176,7 +181,7 @@ export default function LogarCriarConta(props) {
         outro_sistema_login: true,
         password: 'QUALQUER-PARA-PASSAR-NA-API@#$!1234567890@#$**************!@#(*Y(Y*YYGG&*G*G&7&%&&E%DDDbbhbbdhvbsdbvnslvnsdvnsinvivçinsviboiboçubdvçouboçvbsubvçobozbvosbovosbvosbvobsozvbszbvosbvobsuovoso8h082h0h80h0e9whvhv8zsvçhs0vh0hvz0çwh08gh0gha80whg80hag08hghspghpsp\ghpahg0&T&GCIYGYIVCDG*g8yvd8cv8sd><><><l,lmçlmLKNKNLNLN'
       })
-      console.log('data:::: ', data.data.error)
+      //console.log('data:::: ', data.data.error)
       if (data.data.error === false) {
         Storage.armazenarUserLogin('value', email )
         //navigation.navigate('MinhasLista', email )

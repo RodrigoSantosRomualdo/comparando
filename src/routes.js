@@ -95,12 +95,14 @@ const Routes = () => {
                 component={CombustivelPreco}
                 options={{headerShown: false}}
                 />
-    
-             <Stack.Screen
+
+                <Stack.Screen
                 name="MinhasLista"
                 component={MinhasLista}
                 options={{headerShown: false}}
                  />
+    
+       
     
             <Stack.Screen
                 name="Pesquisa"

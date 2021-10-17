@@ -22,6 +22,11 @@ const deletarListaPadrao = async (chave) => {
     console.log('DeletarListaPadrao value: ', chave)
 }
 
+const removeUserLogin = async (chave) => {
+  await AsyncStorageUsuario.removeItem(chave)
+  console.log('DELETE STORAGE MENU: ')
+}
+
 const buscarListaPadrao = async (chave) => {
   const valor = await AsyncStorageUsuario.getItem(chave)
   console.log('buscarListaPadrao DO STORAGE: ', valor )
@@ -34,5 +39,6 @@ export default {
     buscarUserLogin,
     armazenarListaPadrao,
     deletarListaPadrao,
-    buscarListaPadrao
+    buscarListaPadrao,
+    removeUserLogin
 }

@@ -59,6 +59,12 @@ export default function MinhasLista(props) {
   //deleteUserLogin('verificador')
   // rsr@gmail.com
 
+  async function TesteNavigation() {
+    console.log('TesteNavigation()')
+    //Routes.Routes()
+
+    navigation.navigate('Home')
+  }
 
   async function loadLista(id_user) {
     //await buscarUserLogin('verificador')
@@ -120,7 +126,7 @@ export default function MinhasLista(props) {
         const responseLista = await ServiceListaUser.post('/findlistaall', {
           "id_user": id_user
         })
-        console.log('O QUE ACONTECE NA LISTA: ', responseLista.data)
+       // console.log('O QUE ACONTECE NA LISTA: ', responseLista.data)
         if (responseLista.data.status === 0) {
           setLoading(false);
           return await setListaVazia('0')
