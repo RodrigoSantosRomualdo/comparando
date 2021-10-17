@@ -18,7 +18,8 @@ export default function Home({navigation}) {
     const [supermecadoDistancia, setSupermecadoDistancia] = useState()
     const [distancia, setDistancia] = useState(10000)
     const [desativaEnquantoDecide, setDesativaEnquantoDecide] = useState(false)
-  
+    
+
     const keyboardd = useKeyboard()
     //console.log('keyboard isKeyboardShow: ', keyboardd.keyboardShown)
     //console.log('keyboard keyboardHeight: ', keyboardd.keyboardHeight)
@@ -89,6 +90,10 @@ export default function Home({navigation}) {
       
     }
 
+
+
+    
+    
     
 
     return (
@@ -276,6 +281,6 @@ export default function Home({navigation}) {
       return () => {
         showSubscription.remove();
         hideSubscription.remove();
-      };
+      }; 
     }, []);  
   */
