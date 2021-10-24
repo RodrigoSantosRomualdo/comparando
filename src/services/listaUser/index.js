@@ -6,8 +6,8 @@ import axios from 'axios';
 //export const key = '7eed1d01';
 
 const serviceListaUser =  axios.create({
-  //baseURL: 'http://192.168.1.92:3000/listamercado'
-  baseURL: 'https://comparando-api.herokuapp.com/listamercado'
+  baseURL: 'http://192.168.1.92:3000/listamercado'
+  //baseURL: 'https://comparando-api.herokuapp.com/listamercado'
 });
 
 export default serviceListaUser;

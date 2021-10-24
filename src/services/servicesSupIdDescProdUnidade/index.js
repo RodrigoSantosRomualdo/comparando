@@ -6,8 +6,8 @@ import axios from 'axios';
 export const key = '7eed1d01';
 
 const servicesSupIdDescProdUnidade =  axios.create({
-  //baseURL: 'http://192.168.1.92:3000/produto'
-  baseURL: 'https://comparando-api.herokuapp.com/produto'
+  baseURL: 'http://192.168.1.92:3000/produto'
+  //baseURL: 'https://comparando-api.herokuapp.com/produto'
 });
 
 export default servicesSupIdDescProdUnidade;

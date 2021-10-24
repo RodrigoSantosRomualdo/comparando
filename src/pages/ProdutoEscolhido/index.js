@@ -12,9 +12,7 @@ import styles from './styles';
 export default function ProdutoEscolhido(props) {
     const navigation = useNavigation();
 
-    console.log('------------------------')
-    console.log(props)
-    console.log('------------------------')
+    console.log('--> ',props)
     return (
         <View style={styles.container}>
 

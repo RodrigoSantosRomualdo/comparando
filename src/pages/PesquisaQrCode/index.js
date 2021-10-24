@@ -45,6 +45,7 @@ export default function PesquisaQrcode(props) {
     const [listaPadraoAdd, setListaPadraoAdd] = useState();
     const [supermecadoId, setSupermecadoId] = useState()
     const [supermecadoDistancia, setSupermecadoDistancia] = useState()
+    const [modalVisibleKM, setModalVisibleKM] = useState(false);
     
     const [modalVisibleSemLista, setModalVisibleSemLista] = useState(false);
     const [modalVisibleAddProduto, setModalVisibleAddProduto] = useState(false);
@@ -56,18 +57,22 @@ export default function PesquisaQrcode(props) {
     const [objProdutoEscolhido, setObjProdutoEscolhido] = useState(null)
     const [loading, setLoading] = useState(true);
     const [resultProduto, setResultProduto ] = useState()
-    const [dataServiceprod, setDataServiceprod ] = useState()
+    const [dataServiceprod, setDataServiceprod ] = useState() 
+    const [valueKM, setValueKM] = useState()
  
 
       useEffect(() => {
         (async () => {
             const listaPadraoAdd = await Storage.buscarListaPadrao('lista')
 
+            const valuesKm = await Storage.buscarKM('valueKM')
+            console.log('-------------------->>>> ', valuesKm)
+            setValueKM(valuesKm)
             let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
             //setLocation(location);
             //console.log('Latitude: ',location.coords.latitude)
             //console.log('Longitude: ',location.coords.longitude)      const json = await JSON.stringify({ answer: 42 })
-            const responseLocation = await servicesLocationSup.post('/', { coordinates: [location.coords.latitude, location.coords.longitude]});
+            const responseLocation = await servicesLocationSup.post('/', { coordinates: [location.coords.latitude, location.coords.longitude], maxDistance: valuesKm});
             let date = responseLocation.data;
             
             console.log('date: ',date)
@@ -87,10 +92,30 @@ export default function PesquisaQrcode(props) {
             console.log('listaPadraoAddlistaPadraoAddlistaPadraoAddlistaPadraoAdd ', listaPadraoAdd)
             await setListaPadraoAdd(listaPadraoAdd)
 
-            const response = await servicesSupIdDescProdUnidade.post('/buscar-codigo-barras-findall',{
+            console.log('supermecadoId::::::::::: ', supermecadoId)
+            setLoading(false);
+
+
+
+
+           if (arraySupermecado.length === 0) {
+              setLoading(false)
+              return Alert.alert(
+                'Atenção',
+                `Não foi possível encontrar supermecados próximos, você precisa alterar o raio de distância.`,
+                [
+                  { text: 'Ok', onPress: (() => modalKm()) },
+                ], )
+            } else {
+              const response = await servicesSupIdDescProdUnidade.post('/buscar-codigo-barras-findall',{
                 codigo_barras: props.route.params?.codigo_barras,
                 id: arraySupermecado
-            })
+            })  
+            setLoading(false);
+            return await setDataServiceprod(response.data)
+          }  
+
+            
             //console.log('useEffect: ',response.data)
 
              //console.log('FINALIZOU', response.data)
@@ -103,13 +128,103 @@ export default function PesquisaQrcode(props) {
         
              //console.log('RESPONSE USER: ', responseUser.data[0]._id)
             //setUserId(responseUser.data[0]._id)
-            setLoading(false);
-            return await setDataServiceprod(response.data)
+            
             //console.log('response.data:::: ', response.data)
             
         })();
 
       }, [])
+
+      async function modalKm() {
+        // valueKM, setValueKM
+        if (modalVisibleKM === false) {
+          setModalVisibleKM(true)
+          const maxDistance = await Storage.buscarKM('valueKM')
+          console.log('modalKm valueKm ---> ', maxDistance)
+          if (maxDistance === null) {
+            await Storage.armazenarKM('valueKM', '7')
+            await setValueKM('7')
+            console.log('CAIU IF 1')
+            setLoading(false)
+          } else {
+            //await Storage.armazenarKM('valueKM', '8000')
+            const valuesKm = await Storage.buscarKM('valueKM')
+  
+            setValueKM(valuesKm)
+            console.log('CAIU IF 2 ', valuesKm)
+            setLoading(false)
+          }
+        }
+      }
+  
+      function cancelarKM() {
+        console.log('CANCELAR KM')
+        setModalVisibleKM(false)
+      }
+  
+     async function alterarKM() {
+        console.log('ALTERAR KM')
+        console.log('TIPO ', valueKM.length)
+  
+        if (valueKM <= 50 && valueKM > 0 && valueKM.length <= 2 ) {
+          console.log('MENOR QUE 50 ', valueKM)
+          await Storage.deletarKM('valueKM')
+          await Storage.armazenarKM('valueKM', valueKM)
+          //const valuesKm = await Storage.buscarKM('valueKM')
+          //console.log('VALUE KM ::: 3 ', valuesKm)
+        const maxDistance = valueKM;
+        let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.High});
+          let date;
+          if (location) {
+            const response = await servicesLocationSup.post('/', { coordinates: [location.coords.latitude, location.coords.longitude], maxDistance: maxDistance});
+            date = response.data;
+          } 
+  
+          let arraySupermecado = [];
+        let arraySupermecadoDiscancia = [];
+        date.map(async function(item) {
+          //console.log(item._id)
+         //console.log('... ----------------------->',item.location_distance)
+         
+         await arraySupermecado.push(item._id)
+         await arraySupermecadoDiscancia.push(item)
+         //await arraySupermecadoDiscancia.push({id: item._id, distancia: item.location_distance})
+         navigation.navigate('Scanner')
+        })
+        await setSupermecadoId(arraySupermecado)
+        await setSupermecadoDistancia(arraySupermecadoDiscancia)
+          
+          //setLoading(false)
+          return setModalVisibleKM(false)
+  
+        } else  if (valueKM > 50) {
+          return Alert.alert(
+            'Error',
+            `Não é permitido alterar distância maior que 50 KM`,
+            [ { text: 'Ok'  },  ], )
+        } else  if (valueKM <= 50 && valueKM.length > 2) {
+          return Alert.alert(
+            'Error',
+            `Vefifica se você não inseriu espaço em branco ou outro valor diferente de número.`,
+            [ { text: 'Ok'  },  ], )
+        } else if (valueKM < 1) {
+        return Alert.alert(
+          'Error',
+          `Valor negativo ou 0 não é permitido`,
+          [ { text: 'Ok'  },  ], )
+        }  else {
+          return Alert.alert(
+            'Error',
+            `Não foi possível alterar a quantidade de KM`,
+            [ { text: 'Ok'  },  ], )
+        }
+        //console.log('::: ', typeof(valueKM))
+       /* if(typeof(valueKM) === 'number') {
+          console.log('TIPO ', valueKM.typeof())
+        }  */
+        
+        setModalVisibleKM(true)
+      }
 
       if (loading) {
         return (
@@ -119,6 +234,52 @@ export default function PesquisaQrcode(props) {
               </Text>
           </View>
         )
+      }
+
+      if(modalVisibleKM) {
+        return <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisibleKM}
+          onRequestClose={() => {
+            //Alert.alert("AA Modal has been closed.");
+            setModalVisibleKM(!modalVisibleKM);
+          }}
+        >
+          <View style={stylesCreateModal.centeredView}>
+            <View style={stylesCreateModal.modalView}>
+              <Text style={stylesCreateModal.modalText}>Informe KM entre 1 e 50</Text>
+      
+              <TextInput
+                  style={{width: 60 ,height: 60, margin: 10, padding: 10, 
+                    backgroundColor: '#9C93FC', borderRadius: 20, fontSize: 20}}
+                    placeholder="KM"
+                    keyboardType = 'numeric'
+                    autoCapitalize = 'words'
+                    multiline={false}
+                    value={valueKM}
+                    onChangeText={valueKM => setValueKM(valueKM)}
+                    
+                /> 
+              
+              <View style={{width: '80%' ,flexDirection: 'row', justifyContent: 'space-around'}}>
+              <Pressable
+                  style={[stylesCreateModal.button, stylesCreateModal.buttonClose]}
+                  onPress={() => cancelarKM()}
+                >
+                  <Text style={stylesCreateModal.textStyle}>Cancelar</Text>
+                </Pressable>
+      
+                <Pressable
+                  style={[stylesCreateModal.button, stylesCreateModal.buttonClose]}
+                  onPress={() => alterarKM()}
+                >
+                  <Text style={stylesCreateModal.textStyle}>Alterar KM</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>
       }
 
       
@@ -133,7 +294,7 @@ export default function PesquisaQrcode(props) {
       async function salvarProduto(objProduto, objUser, descricao, item) {
         console.log('CHAMOU O SALVAR PRODUTO')
         if (userId === null) {
-          console.log('É NULL userId: ',userId)
+          console.log('É NULL  userId: ',userId)
   
           Alert.alert(
             'Atenção',
@@ -354,7 +515,7 @@ export default function PesquisaQrcode(props) {
                     </TouchableOpacity>
                     <Text style={{fontSize: 22, fontWeight: 'normal'}}>{props.route.params?.codigo_barras}</Text>
                     <TouchableOpacity>
-                        <MaterialCommunityIcons name="filter-outline" size={24} color="black" />
+                        <Text></Text>
                     </TouchableOpacity>
                 </View>
 
@@ -366,29 +527,29 @@ export default function PesquisaQrcode(props) {
                     style={{width: '90%', height: '100%', borderTopColor: '#EBE8EA', borderTopWidth: 2, }}
                     showsVerticalScrollIndicator ={false}
                     renderItem={({ item }) => (
-                        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-                            <TouchableOpacity style={{width: '80%', backgroundColor: '#8B80FC', borderRadius: 39, 
-                        flexDirection: 'row', marginTop: '3%'}}>
-                            <Image source={require('../../assets/qrcode/qr-code.png')} 
-                        style={{width:68, height:70, borderRadius: 19, marginLeft: 15, marginBottom: 15, marginTop: 15, marginRight: 15}}/>
+                      <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                      <TouchableOpacity style={{width: '90%', backgroundColor: '#8B80FC', borderRadius: 39, 
+                  flexDirection: 'row', marginTop: '3%'}} onPress={() => salvarProduto(dataServiceprod, userId, item?.descricao, item )}>
+                      <Image source={require('../../assets/qrcode/qr-code.png')} 
+                  style={{width:68, height:70, borderRadius: 19, marginLeft: 15, marginBottom: 15, marginTop: 15, marginRight: 15}}/>
 
-                        <View style={{marginTop: 15}}>
-                            <Text style={{color: '#000', fontSize: 14, fontWeight: 'bold', width: '90%' }}>{item?.descricao}</Text>
-                            <Text style={{color: '#000', fontSize: 10, fontWeight: 'bold' }}>{item.supermecado?.nome_fantasia}</Text>
-                            <Text style={{color: '#FFFFFF', fontSize: 18, fontWeight: 'bold' }}>R$ {item?.preco_venda}</Text>
-                        </View>
+                    <View style={{marginTop: 15}}>
+                        <Text style={{color: '#000', fontSize: 14, fontWeight: 'bold', width: '90%' }}>{item?.descricao}</Text>
+                        <Text style={{color: '#000', fontSize: 10, fontWeight: 'bold' }}>{item.supermecado?.nome_fantasia}</Text>
+                        <Text style={{color: '#FFFFFF', fontSize: 18, fontWeight: 'bold' }}>R$ {item?.preco_venda}</Text>
+                    </View>
 
-                        </TouchableOpacity>
+                    <View style={{position: 'absolute', marginLeft: '80%', marginTop: '8%'}}>
+                    <Icon name="playlist-plus" color={'#000'} size={30} style={{//width:68, height:70, 
+                        borderRadius: 19, marginLeft: 15, 
+                        marginBottom: 15, marginTop: 15, marginRight: 15}} />
+                    </View>
+                    
 
-                        <TouchableOpacity style={{marginTop: '8%'}} 
-                        onPress={() => salvarProduto(dataServiceprod, userId, item.descricao, item )} >
-                            <Icon name="playlist-plus" color={'#000'} size={30} style={{//width:68, height:70, 
-                            borderRadius: 19, marginLeft: 15, 
-                            marginBottom: 15, marginTop: 15, marginRight: 15}} />
+                  </TouchableOpacity>
+                 
 
-                        </TouchableOpacity>
-
-                        </View>
+                  </View>
                         
                     )}
                 />
@@ -511,6 +672,78 @@ export default function PesquisaQrcode(props) {
 
 }
 
+const stylesCreateModal = StyleSheet.create({
+  centeredView: {
+    
+    justifyContent: "center",
+    alignItems: "center",
+    //marginTop: 22,
+    height: '100%',
+    backgroundColor: '#040E2C'
+  },
+  centeredView2: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 0,
+    height: 20,
+    flex: 1, height: '100%',
+    backgroundColor: 'red'
+    
+  },
+  modalView: {
+    margin: 0,
+    backgroundColor: "#8B80FC",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  modalView2: {
+    margin: 20,
+    //backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5  
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+  
+  buttonClose: {
+    backgroundColor: "#FFFFFF",
+  },
+  textStyle: {
+    color: "#8B80FC",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    marginBottom: 18,
+    //textAlign: '',
+    fontSize: 21,
+    color: '#FFFFFF',
+    fontWeight: '700'
+  },
+
+});
 
 const stylesCreate = StyleSheet.create({
     centeredView: {

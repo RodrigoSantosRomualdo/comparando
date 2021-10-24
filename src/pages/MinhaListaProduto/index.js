@@ -391,18 +391,10 @@ export default function MinhaListaProduto(props) {
                 <View>
                     <View style={{justifyContent: 'center', alignItems: 'center'  , marginTop: '30%' }}>
                         <Text style={{fontSize: 15, fontWeight: '700'}}>Sua Lista se encontra vazia</Text>
-                        <Text style={{fontSize: 18, fontWeight: '800'}}>Deseja adicionar produtos na lista?</Text>
 
                     </View>
                     
-                    <View style={{marginTop: '10%',justifyContent: 'center', alignItems: 'center'  , }}>
-                        <TouchableOpacity style={{width: '50%', backgroundColor: '#8B80FC', borderRadius: 39, 
-                        justifyContent: 'center', alignItems: 'center'  , }} onPress={() => navigation.navigate('Home')}>
-                        
-                        <Text style={{fontSize: 25, fontWeight: '700', }}>SIM</Text>
-                        </TouchableOpacity>
-
-                    </View>
+                
                 </View>
             }
         </View>

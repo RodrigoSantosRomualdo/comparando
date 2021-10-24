@@ -6,8 +6,8 @@ import axios from 'axios';
 export const key = '7eed1d01';
 
 const servicoCombustivel =  axios.create({
-  //baseURL: 'http://192.168.1.92:3000/combustivel'
-  baseURL: 'https://comparando-api.herokuapp.com/combustivel'
+  baseURL: 'http://192.168.1.92:3000/combustivel'
+  //comparando-api.herokuapp.com/combustivel'
 });
 
 export default servicoCombustivel;

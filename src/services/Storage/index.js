@@ -6,6 +6,21 @@ const armazenarUserLogin = (chave, valor) => {
     console.log('value: ', valor)
 }
 
+const armazenarKM = (chave, valor) => {
+  AsyncStorageUsuario.setItem(chave, valor)
+    console.log('value KM: ', valor)
+}
+const buscarKM = async (chave) => {
+  const valor = await AsyncStorageUsuario.getItem(chave)
+  console.log('DENTRO DO STORAGE KM: ', valor )
+  return valor;
+}
+
+const deletarKM = async (chave) => {
+  await AsyncStorageUsuario.removeItem(chave)
+    console.log('DeletarListaPadrao value: ', chave)
+}
+
 const buscarUserLogin = async (chave) => {
   const valor = await AsyncStorageUsuario.getItem(chave)
   console.log('DENTRO DO STORAGE STORAGE: ', valor )
@@ -40,5 +55,8 @@ export default {
     armazenarListaPadrao,
     deletarListaPadrao,
     buscarListaPadrao,
-    removeUserLogin
+    removeUserLogin,
+    armazenarKM,
+    buscarKM,
+    deletarKM
 }

@@ -20,6 +20,7 @@ import PesquisaQrcode from './pages/PesquisaQrCode';
 import LogarCriarConta from './pages/LogarCriarConta';
 import CriarConta from './pages/CriarConta';
 import MercadoPesquisa from './pages/MercadoPesquisa';
+import MapCombustivel from './pages/MapCombustivel';
 
 const Stack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
@@ -152,6 +153,14 @@ const Routes = () => {
                 component={MercadoPesquisa}
                 options={{headerShown: false}}
                 />
+
+                <Stack.Screen
+                name="MapCombustivel"
+                component={MapCombustivel}
+                options={{headerShown: false}}
+                />
+            
+
             
             
 

@@ -51,7 +51,7 @@ export default function Pesquisa(props) {
     const [options, setOptions] = useState(["Home","Savings","Car","GirlFriend"])
     const [objProdutoEscolhido, setObjProdutoEscolhido] = useState(null)
     //var options =["Home","Savings","Car","GirlFriend"];
-
+    const [loading, setLoading] = useState(true);
 
     //console.log(props.route.params)
 
@@ -74,8 +74,10 @@ export default function Pesquisa(props) {
           if (response.data.length === 0) {
             const result = {error: false, status: 'vazio', mensagem: 'Produto não encontrado'}
             //console.log(result)
+            setLoading(false)
             return await setDataServiceprod(result)
           } else {
+            setLoading(false)
             return await setDataServiceprod(response.data)
           } 
           
@@ -95,19 +97,21 @@ export default function Pesquisa(props) {
       
         let id;
         if (props.route.params.arraySupermecado) {
+          console.log('IFFFFFFFFFFFFFFFFFFFFFF')
             id = props.route.params.arraySupermecado;
             loadSupProduto(id, props.route.params.codigo_barras )
         } else {
+          console.log('ELSEEEEEEEEEEEEEEE ', props.route.params.supermecadoId )
             id = props.route.params.supermecadoId
             loadSupProduto(id, props.route.params.codigo_barras)
         }
 
     }, []);
 
-    console.log('------------------------')
+    //console.log('------------------------')
     //console.log(props.route.params)
     //console.log(' dataServiceprod: ', dataServiceprod) LARANJA ->  #FA8680
-    console.log('------------------------')
+    console.log('PESQUISA ---> ')
 
     async function criarLista() {
       console.log('---------------__CHAMOU CRIAR LISTA -------------------------')
@@ -290,6 +294,16 @@ export default function Pesquisa(props) {
         
     }
 
+    if (loading) {
+      return (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text style={{ fontSize: 17, fontStyle: 'italic' }}>
+            carregando dados...
+            </Text>
+        </View>
+      )
+    }
+
    
     if (objProdutoEscolhido) {
       console.log('objProdutoEscolhido: --> no IF ', objProdutoEscolhido.descricao)
@@ -387,29 +401,30 @@ export default function Pesquisa(props) {
                     showsVerticalScrollIndicator ={false}
                     renderItem={({ item }) => (
                         <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-                            <TouchableOpacity style={{width: '80%', backgroundColor: '#8B80FC', borderRadius: 39, 
-                        flexDirection: 'row', marginTop: '3%'}}>
+                            <TouchableOpacity style={{width: '90%', backgroundColor: '#8B80FC', borderRadius: 39, 
+                        flexDirection: 'row', marginTop: '3%'}} onPress={() => salvarProduto(dataServiceprod, userId, item?.descricao, item )}>
                             <Image source={require('../../assets/qrcode/qr-code.png')} 
                         style={{width:68, height:70, borderRadius: 19, marginLeft: 15, marginBottom: 15, marginTop: 15, marginRight: 15}}/>
 
-                        <View style={{marginTop: 15}}>
-                            <Text style={{color: '#000', fontSize: 14, fontWeight: 'bold', width: '90%' }}>{item?.descricao}</Text>
-                            <Text style={{color: '#000', fontSize: 10, fontWeight: 'bold' }}>{item.supermecado?.nome_fantasia}</Text>
-                            <Text style={{color: '#FFFFFF', fontSize: 18, fontWeight: 'bold' }}>R$ {item?.preco_venda}</Text>
-                        </View>
+                          <View style={{marginTop: 15}}>
+                              <Text style={{color: '#000', fontSize: 14, fontWeight: 'bold', width: '90%' }}>{item?.descricao}</Text>
+                              <Text style={{color: '#000', fontSize: 10, fontWeight: 'bold' }}>{item.supermecado?.nome_fantasia}</Text>
+                              <Text style={{color: '#FFFFFF', fontSize: 18, fontWeight: 'bold' }}>R$ {item?.preco_venda}</Text>
+                          </View>
+
+                          <View style={{position: 'absolute', marginLeft: '80%', marginTop: '8%'}}>
+                          <Icon name="playlist-plus" color={'#000'} size={30} style={{//width:68, height:70, 
+                              borderRadius: 19, marginLeft: 15, 
+                              marginBottom: 15, marginTop: 15, marginRight: 15}} />
+                          </View>
+                          
 
                         </TouchableOpacity>
-
-                        <TouchableOpacity style={{marginTop: '8%'}} 
-                        onPress={() => salvarProduto(dataServiceprod, userId, item?.descricao, item )} >
-                            <Icon name="playlist-plus" color={'#000'} size={30} style={{//width:68, height:70, 
-                            borderRadius: 19, marginLeft: 15, 
-                            marginBottom: 15, marginTop: 15, marginRight: 15}} />
-
-                        </TouchableOpacity>
-
+                       
 
                         </View>
+
+                        
                         
                         
                     )}

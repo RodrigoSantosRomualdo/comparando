@@ -2,12 +2,16 @@ import React, {useState, useEffect} from 'react';
 import { Button, Image, FlatList, TouchableOpacity, StyleSheet, Text, View } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
+import { useNavigation } from '@react-navigation/native';
 import servicoCombustivel from  '../../services/servicoCombustivel';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Storage from '../../services/Storage';
 
 import styles from './styles'
 
-export default function CombustivelPreco(props) {
+export default function CombustivelPreco(props) {  
+
+ // console.log('propsss: ', props)
 
   //console.log('props PC: ', props.route.params.combustivelId)
 
@@ -16,6 +20,9 @@ export default function CombustivelPreco(props) {
   const [combustivelId, setCombustivelId] = useState();
   const [postosCombustivelDistancia, setPostosCombustivelDistancia] = useState();
   const [precoCombustivel, setPrecoCombustivel] = useState();
+  const [loading, setLoading] = useState(true);
+  const [datePosto, setDatePosto] = useState();
+  const navigation = useNavigation();
 
    useEffect(() => {
     (async () => {
@@ -28,11 +35,11 @@ export default function CombustivelPreco(props) {
       }
 
       let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.High});
-      console.log('location::::::: ', location)
+      //console.log('location::::::: ', location)
       await setLocation(location);
 
-
-      const responseServicoCombustivel = await servicoCombustivel.post('/location', { coordinates: [location.coords.latitude, location.coords.longitude]});
+      const maxDistance = await Storage.buscarKM('valueKM')
+      const responseServicoCombustivel = await servicoCombustivel.post('/location', { coordinates: [location.coords.latitude, location.coords.longitude], maxDistance: maxDistance});
       let date = responseServicoCombustivel.data;
 
       let arrayPostosCombustivel = [];
@@ -47,15 +54,17 @@ export default function CombustivelPreco(props) {
 
       if (arrayPostosCombustivel.length === 0) {
         console.log('ENTROU POSTO DE GASOLINA: ', arrayPostosCombustivel.length)
+        setLoading(false)
       } else {
         const response = await servicoCombustivel.post('/busca-ordenado', { _id: arrayPostosCombustivel , categoria: categoria});
-        console.log('response: ', response.data)
+        console.log('response: ', )
+        await setDatePosto(response.data)
         setPrecoCombustivel(response.data)
+        //console.log('datePosto: ', datePosto)
+        setLoading(false)
 
       }
 
-      
-   
     })();
 
   },[props.route.params])
@@ -90,6 +99,15 @@ export default function CombustivelPreco(props) {
       
  }
   
+ if (loading) {
+  return (
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <Text style={{ fontSize: 17, fontStyle: 'italic' }}>
+        Carregando Preços...
+        </Text>
+    </View>
+  )
+}
   
   return (
       <View style={styles.container}>
@@ -107,7 +125,8 @@ export default function CombustivelPreco(props) {
                 renderItem={({ item }) => (
                   <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
                       <TouchableOpacity style={{width: '90%', backgroundColor: '#8B80FC', borderRadius: 39, 
-                  flexDirection: 'row', marginTop: '3%'}}>
+                  flexDirection: 'row', marginTop: '3%'}} onPress={() => {navigation.navigate('MapCombustivel', {datePosto})
+                  }} >
                       <Image source={require('../../assets/qrcode/qr-code.png')} 
                   style={{width:68, height:70, borderRadius: 19, marginLeft: 15, marginBottom: 15, marginTop: 15, marginRight: 15}}/>
 
