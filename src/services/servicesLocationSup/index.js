@@ -6,8 +6,8 @@ import axios from 'axios';
 export const key = '7eed1d01';
 
 const servicesLocationSup =  axios.create({
-  baseURL: 'http://192.168.1.92:3000/location'
-  //baseURL: 'https://comparando-api.herokuapp.com/location'
+  //baseURL: 'http://192.168.1.92:3000/location'
+  baseURL: 'https://comparando-api.herokuapp.com/location'
 });
 
 export default servicesLocationSup;
