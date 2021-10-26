@@ -253,10 +253,10 @@ async function criarLista() {
       const valor = await Storage.buscarListaPadrao('lista')
       console.log('VALOR::::::::::::', valor)
       if (valor === null) {
-        Storage.armazenarListaPadrao('lista', valueTextSemLista)
+        await Storage.armazenarListaPadrao('lista', valueTextSemLista)
       } else {
-        Storage.deletarListaPadrao('lista')
-        Storage.armazenarListaPadrao('lista', valueTextSemLista)
+        await Storage.deletarListaPadrao('lista')
+        await Storage.armazenarListaPadrao('lista', valueTextSemLista)
       }
       const valor2 = await Storage.buscarListaPadrao('lista')
       console.log('VALOR 222222222:::::::: ', valor2)

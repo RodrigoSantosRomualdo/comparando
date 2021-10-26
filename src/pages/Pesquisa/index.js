@@ -182,8 +182,9 @@ export default function Pesquisa(props) {
     let teste = [];
     async function salvarProduto(objProduto, userId, descricao, item) {
 
+      //console.log('userId:::::: ', userId)
       if (userId === null) {
-        console.log('É NULL userId: ',userId)
+        //console.log('É NULL userId: ',userId)
 
         Alert.alert(
           'Atenção',
@@ -197,6 +198,9 @@ export default function Pesquisa(props) {
 
 
       } else {
+        console.log('------------------------------------------------------------')
+        console.log('------------------------ELSE PESQUISA------------------------')
+        console.log('------------------------------------------------------------')
         const resultUserId = await Storage.buscarUserLogin('value');
         setUserId(resultUserId)
         //console.log('userId:::: ',  resultUserId)
@@ -215,10 +219,11 @@ export default function Pesquisa(props) {
           )
         } else if (responseLista.data.status !== 0) {
           const resultList = await Storage.buscarUserLogin('lista');
-          console.log('resultList:: ', resultList)
+          //console.log('resultList:: ', resultList)
             if (resultList === null) {
               console.log('RESULT LIST NULL')
               navigation.navigate('MinhasLista', { userNull: true})
+              
             } else {
               await setObjProdutoEscolhido(item)
               setModalVisibleAddProduto(true)
@@ -230,7 +235,6 @@ export default function Pesquisa(props) {
           //await setObjProdutoEscolhido(item)
           //setModalVisibleAddProduto(true)
           //setModalVisible(true);
-          console.log('------------->>>>JLKJKLSJL')
 
         }
         
