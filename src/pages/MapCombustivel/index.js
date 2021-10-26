@@ -4,10 +4,10 @@ import MapView,  { Marker } from 'react-native-maps';
 import {MaterialCommunityIcons} from '@expo/vector-icons'
 
 export default function MapCombustivel(props) {
-   console.log('--------PROPS: ', props.route.params.datePosto)
+   //console.log('--------PROPS: ', )
   const [mapRegion, setmapRegion] = useState({
-    latitude: -20.3034868,
-    longitude: -40.3465732,
+    latitude: props.route.params.location.coords.latitude,
+    longitude: props.route.params.location.coords.longitude,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
