@@ -27,7 +27,7 @@
 
 
 import React, {useEffect, useState} from 'react';
-import { Button, Image, Alert,StyleSheet, Text, View , Modal, TextInput, Pressable , TouchableOpacity, FlatList} from 'react-native';
+import { Button, Image, ActivityIndicator, Alert,StyleSheet, Text, View , Modal, TextInput, Pressable , TouchableOpacity, FlatList} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ServiceListaUser from '../../services/listaUser'
 import serviceUser from '../../services/serviceUser'
@@ -46,6 +46,7 @@ export default function MinhasLista(props) {
   const [modalVisibleSemLista, setModalVisibleSemLista] = useState(false);
   const [valueTextSemLista, setValueTextSemLista] = useState()
   const [userId, setUserId] = useState(Storage.buscarUserLogin('value'))
+  const [isActivityIndicator, setActivityIndicator] = useState(false)
   // Trazer pelo navigation quando o usuário logar
   const [dataServiceprod, setDataServiceprod ] = useState()
   const [loading, setLoading] = useState(true);
@@ -199,10 +200,12 @@ async function findProdutoList(nameList) {
 }
 
 async function criarLista() {
+  setActivityIndicator(true)
   console.log('lenght: VERIFICAR SE EXISTE ALGUM CARACTERE ')
   if (valueTextSemLista === '') {
     
     console.log('USUARIO NÂO INSERIU NADA')
+    setActivityIndicator(false)
     return Alert.alert(
       //title
       'Error',
@@ -216,7 +219,7 @@ async function criarLista() {
   )
     
   } else {
-
+    // TRAVA BOTAO AQUI
     const existeLista = await ServiceListaUser.post('/obterUm', {
       "id_user": userId,
       "nome_lista": valueTextSemLista,
@@ -225,6 +228,7 @@ async function criarLista() {
     console.log('existeLista.data: ',existeLista.data)
 
     if (existeLista.data.status === 1) {
+      setActivityIndicator(false)
       return Alert.alert(
         //title
         'Error',
@@ -268,6 +272,7 @@ async function criarLista() {
       //setLista(null)
     }
     await loadLista(userId)
+    setActivityIndicator(false)
     setModalVisibleSemLista(false)
     setValueTextSemLista('')  
 
@@ -482,21 +487,25 @@ if(modalVisibleSemLista) {
               
           />
         
+        {!isActivityIndicator && 
         <View style={{width: '80%' ,flexDirection: 'row', justifyContent: 'space-around'}}>
-        <Pressable
-            style={[stylesCreate.button, stylesCreate.buttonClose]}
-            onPress={() => cancelarLista()}
-          >
-            <Text style={stylesCreate.textStyle}>Cancelar</Text>
-          </Pressable>
-
           <Pressable
-            style={[stylesCreate.button, stylesCreate.buttonClose]}
-            onPress={() => criarLista()}
-          >
-            <Text style={stylesCreate.textStyle}>Criar Lista</Text>
+              style={[stylesCreate.button, stylesCreate.buttonClose]}
+              onPress={() => cancelarLista()}
+            >
+              <Text style={stylesCreate.textStyle}>Cancelar</Text>
+            </Pressable>
+            <Pressable
+              style={[stylesCreate.button, stylesCreate.buttonClose]}
+              onPress={() => criarLista()}
+            >
+              <Text style={stylesCreate.textStyle}>Criar Lista</Text>
           </Pressable>
         </View>
+        }
+        {isActivityIndicator && 
+            <ActivityIndicator size="large" color="#ffffff" />
+        }
       </View>
     </View>
   </Modal>

@@ -32,7 +32,7 @@ export default function CombustivelPreco(props) {
 
    useEffect(() => {
     (async () => {
-      console.log('-------------------------------------s')
+      //console.log('-------------------------------------s')
       const categoria = await props.route.params?.item.texto;
 
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -48,7 +48,6 @@ export default function CombustivelPreco(props) {
       const maxDistance = await Storage.buscarKM('valueKM')
       const responseServicoCombustivel = await servicoCombustivel.post('/location', { coordinates: [location.coords.latitude, location.coords.longitude], maxDistance: maxDistance});
       let date = responseServicoCombustivel.data;
-
       let arrayPostosCombustivel = [];
       let arrayPostosCombustivelDiscancia = [];
       date.map(async function(item) {
@@ -57,10 +56,11 @@ export default function CombustivelPreco(props) {
       })
     /*  await setCombustivelId(arrayPostosCombustivel)
       await setPostosCombustivelDistancia(arrayPostosCombustivelDiscancia)  */
-      console.log('datedate: ', date)
+      //console.log('datedate: ', date)
 
       if (arrayPostosCombustivel.length === 0) {
-        console.log('ENTROU POSTO DE GASOLINA: ', arrayPostosCombustivel.length)
+        //console.log('ENTROU POSTO DE GASOLINA: ', arrayPostosCombustivel.length)
+        setLoading(false)
         return Alert.alert(
           //title
           'Atenção',
@@ -72,10 +72,10 @@ export default function CombustivelPreco(props) {
             },
           ],
         )
-        setLoading(false)
+        
       } else {
         const response = await servicoCombustivel.post('/busca-ordenado', { _id: arrayPostosCombustivel , categoria: categoria});
-        console.log('response: ', )
+        //console.log('response: ', )
         await setDatePosto(response.data)
         setPrecoCombustivel(response.data)
         //console.log('datePosto: ', datePosto)

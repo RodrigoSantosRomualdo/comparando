@@ -86,6 +86,7 @@ export default function Combustivel({navigation}) {
       //  console.log('distancia --- ', distancia)
       //  let result =  distancia / 1000
       //  console.log('KM ', result.toFixed(2)) 
+      console.log('-------------------___>>>>>>>>>>>>>>>..')
         navigation.navigate('CombustivelPreco' , {item })
       
  }

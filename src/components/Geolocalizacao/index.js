@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import servicesLocationSup from  '../../services/servicesLocationSup'
 
 import * as Location from 'expo-location';
 import api, {key} from '../../services/api-endereco';
@@ -11,6 +12,7 @@ export default function MapLocalizacao() {
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
     const [cityApi, setCityApi] = useState();
+    const [city, setCity] = useState();
 
   useEffect(() => {
     (async () => {
@@ -21,9 +23,15 @@ export default function MapLocalizacao() {
       }
 
 
-      //let location = await Location?.getCurrentPositionAsync({});
-      //console.log(location)
-      
+      let location = await Location?.getCurrentPositionAsync({});
+      //console.log(location) 
+      let maxDistance = 3
+      let date;
+      if (location) {
+        const response = await servicesLocationSup.post('/', { coordinates: [location.coords.latitude, location.coords.longitude], maxDistance: maxDistance});
+        date = response.data;
+      }
+      setCity(date[0]?.city)
       /*
       
       if (location) {
@@ -60,7 +68,7 @@ export default function MapLocalizacao() {
 
     return (
         <View>
-            <Text>Vitória - ES</Text>
+            <Text>{city}</Text>
         </View>
       
     )

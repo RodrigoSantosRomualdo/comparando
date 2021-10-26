@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import MapView,  { Marker } from 'react-native-maps';
 import {MaterialCommunityIcons} from '@expo/vector-icons'
+import * as Location from 'expo-location';
 
 export default function MapCombustivel(props) {
    //console.log('--------PROPS: ', )
+   const [location, setLocation] = useState(null);
   const [mapRegion, setmapRegion] = useState({
-    latitude: props.route.params.location.coords.latitude,
-    longitude: props.route.params.location.coords.longitude,
+    latitude: props.route.params.location.coords?.latitude,
+    longitude: props.route.params.location.coords?.longitude,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
@@ -33,14 +35,14 @@ export default function MapCombustivel(props) {
         showsUserLocation={true}
         
     >
-    {props.route.params.datePosto 
-        ? props.route.params.datePosto.map(mapPosto => (
+    {props.route.params?.datePosto 
+        ? props.route.params?.datePosto.map(mapPosto => (
 
         <Marker
         key={mapPosto._id}
-        coordinate={{latitude:mapPosto.posto_combustivel.location.coordinates[0], longitude:mapPosto.posto_combustivel.location.coordinates[1]}}
-        title={`R$ ${mapPosto.preco_venda} - ${mapPosto.posto_combustivel.nome_fantasia}`}
-        description={`${mapPosto.descricao}`} 
+        coordinate={{latitude:mapPosto.posto_combustivel?.location.coordinates[0], longitude:mapPosto.posto_combustivel?.location.coordinates[1]}}
+        title={`R$ ${mapPosto?.preco_venda} - ${mapPosto.posto_combustivel?.nome_fantasia}`}
+        description={`${mapPosto?.descricao}`} 
         >
              <MaterialCommunityIcons name={"gas-station"} size={26} color="red" />
         </Marker>
