@@ -327,27 +327,26 @@ export default function MercadoPesquisa(props) {
                     style={{width: '90%', height: '100%', borderTopColor: '#EBE8EA', borderTopWidth: 2, }}
                     showsVerticalScrollIndicator ={false}
                     renderItem={({ item }) => (
-                        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-                            <TouchableOpacity style={{width: '80%', backgroundColor: '#8B80FC', borderRadius: 39, 
-                        flexDirection: 'row', marginTop: '3%'}}>
-                            <Image source={require('../../assets/qrcode/qr-code.png')} 
-                        style={{width:68, height:70, borderRadius: 19, marginLeft: 15, marginBottom: 15, marginTop: 15, marginRight: 15}}/>
+                      <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                      <TouchableOpacity style={{width: '90%', backgroundColor: '#8B80FC', borderRadius: 39, 
+                  flexDirection: 'row', marginTop: '3%'}} onPress={() => salvarProduto(dataServiceprod, userId, item?.descricao, item )}>
+                      <Image source={require('../../assets/qrcode/qr-code.png')} 
+                  style={{width:68, height:70, borderRadius: 19, marginLeft: 15, marginBottom: 15, marginTop: 15, marginRight: 15}}/>
 
-                        <View style={{marginTop: 15}}>
-                            <Text style={{color: '#000', fontSize: 14, fontWeight: 'bold', width: '90%' }}>{item?.descricao}</Text>
-                            <Text style={{color: '#000', fontSize: 10, fontWeight: 'bold' }}>{item.supermecado?.nome_fantasia}</Text>
-                            <Text style={{color: '#FFFFFF', fontSize: 18, fontWeight: 'bold' }}>R$ {item?.preco_venda}</Text>
-                        </View>
+                    <View style={{marginTop: 15}}>
+                        <Text style={{color: '#000', fontSize: 14, fontWeight: 'bold', width: '90%' }}>{item?.descricao}</Text>
+                        <Text style={{color: '#000', fontSize: 10, fontWeight: 'bold' }}>{item.supermecado?.nome_fantasia}</Text>
+                        <Text style={{color: '#FFFFFF', fontSize: 18, fontWeight: 'bold' }}>R$ {item?.preco_venda}</Text>
+                    </View>
 
-                        </TouchableOpacity>
+                    <View style={{position: 'absolute', marginLeft: '80%', marginTop: '8%'}}>
+                    <Icon name="playlist-plus" color={'#000'} size={30} style={{//width:68, height:70, 
+                        borderRadius: 19, marginLeft: 15, 
+                        marginBottom: 15, marginTop: 15, marginRight: 15}} />
+                    </View>
+                    
 
-                        <TouchableOpacity style={{marginTop: '8%'}} 
-                        onPress={() => salvarProduto(dataServiceprod, userId, item?.descricao, item )} >
-                            <Icon name="playlist-plus" color={'#000'} size={30} style={{//width:68, height:70, 
-                            borderRadius: 19, marginLeft: 15, 
-                            marginBottom: 15, marginTop: 15, marginRight: 15}} />
-
-                        </TouchableOpacity>
+                  </TouchableOpacity>
                         </View>
                         
                     )}
