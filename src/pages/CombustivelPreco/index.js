@@ -324,6 +324,48 @@ if(modalVisibleKM) {
                 showsVerticalScrollIndicator ={false}
                 renderItem={({ item }) => (
                   <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                      <View style={{width: '90%', backgroundColor: '#8B80FC', borderRadius: 39, 
+                  flexDirection: 'row', marginTop: '3%'}}  >
+                      <Image source={require('../../assets/qrcode/qr-code.png')} 
+                  style={{width:68, height:70, borderRadius: 19, marginLeft: 15, marginBottom: 15, marginTop: 15, marginRight: 15}}/>
+
+                  <View style={{marginTop: 13}}>
+                      <Text style={{color: '#FFF', fontSize: 12, fontWeight: 'bold', width: '90%' }}>{item.descricao}</Text>
+                      <View style={{flexDirection: 'row', justifyContent: 'flex-start', marginTop: '1%'}}>
+                        <Icon name="map-marker-multiple-outline" color={'#FFF'} size={15} />
+                        <Text style={{color: '#FFFFFF', fontStyle: 'italic', fontSize: 12, fontWeight: 'bold', width: '70%' }}>{item.posto_combustivel.endereco}</Text>
+                      </View>
+                      
+                      <Text style={{marginTop: '1%',color: '#FFFFFF', fontSize: 16, fontWeight: 'bold' }}>R$ {item.preco_venda.toFixed(2)} </Text>
+                  </View>
+
+                      </View>
+
+              </View>
+          
+              )}
+          />
+        
+
+        </View>
+        
+      </View>
+    )
+  }
+
+  /*
+
+    QUANDO FOR HABILITAR O MAPA
+    https://developers.google.com/maps/documentation/javascript/get-api-key
+    https://medium.com/@tadeumx1/utilizando-mapas-no-react-native-817c4f4de6f7
+
+    <FlatList
+                data={precoCombustivel}
+                keyExtractor={(item) => item._id.toString()}
+                style={{width: '95%', height: '80%', borderTopColor: '#EBE8EA', borderTopWidth: 2, marginTop: '7%', }}
+                showsVerticalScrollIndicator ={false}
+                renderItem={({ item }) => (
+                  <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
                       <TouchableOpacity style={{width: '90%', backgroundColor: '#8B80FC', borderRadius: 39, 
                   flexDirection: 'row', marginTop: '3%'}} onPress={() => {navigation.navigate('MapCombustivel', {datePosto, location})
                   }} >
@@ -346,13 +388,14 @@ if(modalVisibleKM) {
           
               )}
           />
-        
 
-        </View>
-        
-      </View>
-    )
-  }
+
+
+
+
+
+
+  */
 
   const stylesCreate = StyleSheet.create({
     centeredView: {

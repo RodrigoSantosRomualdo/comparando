@@ -362,15 +362,17 @@ export default function LogarCriarConta(props) {
                 </TouchableOpacity>
               )}
               
-
-              <TouchableOpacity style={{marginTop: '3%',flexDirection: 'row', justifyContent: 'center',padding: 15, backgroundColor: 'green', justifyContent: 'center', alignItems: 'center',
+                {false && 
+                  <TouchableOpacity style={{marginTop: '3%',flexDirection: 'row', justifyContent: 'center',padding: 15, backgroundColor: 'green', justifyContent: 'center', alignItems: 'center',
                   borderRadius: 5, marginVertical: 5, height: 60}} onPress={landleGoogleSignin} >
                   <Fontisto name="google" size={25} color="#ffffff" />
                   <Text style={{fontSize: 16, padding: 25, color: '#ffffff'}}>Login com Google</Text>
               </TouchableOpacity>
+                }
               
               
-              <View style={{borderEndColor: 'black', borderTopWidth: 1, marginTop: '5%',flexDirection: 'row' ,justifyContent: 'center', alignItems: 'center', fontSize: 15}}>
+              
+              <View style={{borderEndColor: 'black', borderTopWidth: 1, marginTop: '25%',flexDirection: 'row' ,justifyContent: 'center', alignItems: 'center', fontSize: 15}}>
                   <Text style={{justifyContent: 'center', alignItems: 'center', fontSize: 15, marginTop: '5%'}}>
                       Ainda não tem uma conta?</Text>
 
