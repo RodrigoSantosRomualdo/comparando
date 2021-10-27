@@ -68,8 +68,8 @@ export default function MercadoPesquisa(props) {
         await setListaPadraoAdd(listaPadraoAdd)
 
         let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.High});
-
-        const response = await servicesLocationSup.post('/', { coordinates: [location.coords.latitude, location.coords.longitude]});
+        const maxDistance = await Storage.buscarKM('valueKM')
+        const response = await servicesLocationSup.post('/', { coordinates: [location.coords.latitude, location.coords.longitude], maxDistance: maxDistance});
         let date = response.data;
         //console.log('response.data::: ', response.data)
 
@@ -92,7 +92,7 @@ export default function MercadoPesquisa(props) {
         })
         //console.log('setDataServiceprod: ', responseProdutos.data)
         //console.log(response.data.length)
-        console.log(responseProdutos.data)
+        //console.log(responseProdutos.data)
         if (responseProdutos.data.status === 0) {
           console.log('ENTROU AQUIIIIIIIIIii')
           SetVerificacaoMenssagem(true)

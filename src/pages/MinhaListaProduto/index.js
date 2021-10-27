@@ -3,6 +3,7 @@ import { Button, StyleSheet, Modal, Text, View,Pressable, FlatList, TouchableOpa
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import Storage from '../../services/Storage';
 
 import ServiceListaUser from '../../services/listaUser'
 
@@ -172,11 +173,13 @@ export default function MinhaListaProduto(props) {
         if (responseMyLista.data.length === 0) {
           setLoading(false);
             setModalFilterList(false)
+            await Storage.deletarListaPadrao('lista')
             return await setMyListProd(null)
         } else {
             console.log('MY PRODUTOS: ',responseMyLista.data )
             setLoading(false);
             setModalFilterList(false)
+            await Storage.deletarListaPadrao('lista')
             return await setMyListProd(responseMyLista.data)
         }
 
