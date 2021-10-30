@@ -27,7 +27,11 @@
       "favicon": "./assets/favicon.png"
     },
     "android": {
-      "package": "com.servicerr.comparando"
+      "package": "com.servicerr.comparando",
+      "adaptiveIcon": {
+        "backgroundColor": "#8B80FC",
+        "foregroundImage": "./assets/icon.png"
+      }
     }
   }
 }
